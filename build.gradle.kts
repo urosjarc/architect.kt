@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    implementation("io.github.classgraph:classgraph:4.8.172")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 
@@ -30,6 +31,10 @@ testing {
             }
         }
 
-        register<JvmTestSuite>("e2e")
+        register<JvmTestSuite>("e2e") {
+            dependencies {
+                implementation("io.github.classgraph:classgraph:4.8.172")
+            }
+        }
     }
 }

@@ -1,3 +1,5 @@
+package com.urosjarc.e2e
+
 import com.urosjarc.architect.core.Repository
 
 
