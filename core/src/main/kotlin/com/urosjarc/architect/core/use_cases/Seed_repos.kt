@@ -1,6 +1,6 @@
 package com.urosjarc.architect.core.use_cases
 
-import com.urosjarc.architect.UseCase
+import com.urosjarc.architect.annotations.UseCase
 import com.urosjarc.architect.core.domain.User
 import com.urosjarc.architect.core.repos.UserRepo
 import com.urosjarc.architect.core.types.encrypted

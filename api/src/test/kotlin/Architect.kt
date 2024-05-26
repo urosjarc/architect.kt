@@ -1,5 +1,3 @@
-package com.urosjarc.architect.api.services
-
 import com.urosjarc.architect.annotations.DomainEntity
 import com.urosjarc.architect.annotations.Repository
 import com.urosjarc.architect.annotations.Service
@@ -13,7 +11,7 @@ import io.github.classgraph.ClassGraph
 import io.github.classgraph.ScanResult
 import kotlin.reflect.full.memberFunctions
 
-internal class ClassGraphService : ClassService {
+internal class Architect : ClassService {
 
     override fun getState(packagePath: String): AState {
         val scanResult = ClassGraph().enableAllInfo().acceptPackages(packagePath).scan()

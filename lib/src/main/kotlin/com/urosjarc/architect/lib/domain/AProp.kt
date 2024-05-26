@@ -7,8 +7,7 @@ import kotlinx.serialization.Serializable
 @DomainEntity
 @Serializable
 public data class AProp(
-    val id: Id<AProp> = Id(),
-    val classId: Id<AClass> = Id(),
+    val classId: Id<AClass>,
     val name: String,
     val type: String,
     val inlineType: String?,
@@ -21,4 +20,5 @@ public data class AProp(
     val isLateinit: Boolean,
     val isOpen: Boolean,
     val isSuspend: Boolean,
+    val id: Id<AProp> = Id(),
 )

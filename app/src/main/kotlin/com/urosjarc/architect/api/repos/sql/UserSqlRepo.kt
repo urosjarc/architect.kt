@@ -1,20 +1,21 @@
 package com.urosjarc.architect.api.repos.sql
 
+import com.urosjarc.architect.api.extend.name
 import com.urosjarc.architect.core.domain.User
 import com.urosjarc.architect.core.repos.UserRepo
 import com.urosjarc.architect.core.types.Encrypted
 import com.urosjarc.architect.core.types.Hashed
-import com.urosjarc.architect.core.types.encrypted
 import com.urosjarc.architect.core.types.Id
+import com.urosjarc.architect.core.types.encrypted
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 internal class UserSqlRepo(val db: Database) : UserRepo {
-    object table : Table(name = "users") {
-        val id = uuid("id")
-        val email = varchar("email", 128)
-        val password = varchar("password", 1024)
-        val type = varchar("type", 15)
+    object table : Table(name = name<User>()) {
+        val id = uuid(User::id.name)
+        val email = varchar(User::email.name, 128)
+        val password = varchar(User::password.name, 1024)
+        val type = varchar(User::type.name, 15)
 
         override val primaryKey = PrimaryKey(id)
     }

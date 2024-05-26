@@ -1,6 +1,6 @@
 package com.urosjarc.architect.core.services
 
-import com.urosjarc.architect.Service
+import com.urosjarc.architect.annotations.Service
 import com.urosjarc.architect.core.serializers.BytesSerializer
 import com.urosjarc.architect.core.serializers.UUIDSerializer
 import kotlinx.serialization.decodeFromString

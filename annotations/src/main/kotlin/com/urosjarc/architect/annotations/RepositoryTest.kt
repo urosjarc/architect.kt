@@ -1,3 +1,3 @@
-package com.urosjarc.architect
+package com.urosjarc.architect.annotations
 
 public annotation class RepositoryTest<T>

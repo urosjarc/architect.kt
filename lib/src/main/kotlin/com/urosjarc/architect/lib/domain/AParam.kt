@@ -7,10 +7,10 @@ import kotlinx.serialization.Serializable
 @DomainEntity
 @Serializable
 public data class AParam(
-    val id: Id<AParam> = Id(),
-    val classId: Id<AClass>,
+    val methodId: Id<AMethod>,
     val name: String,
     val type: String,
     val kind: String,
     val isOptional: Boolean,
+    val id: Id<AParam> = Id(),
 )

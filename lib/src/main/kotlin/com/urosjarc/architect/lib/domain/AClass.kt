@@ -7,7 +7,8 @@ import kotlinx.serialization.Serializable
 @DomainEntity
 @Serializable
 public data class AClass(
-    val id: Id<AClass> = Id(),
     val name: String,
-    val path: String
+    val path: String,
+    val module: String,
+    val id: Id<AClass> = Id(),
 )

@@ -22,3 +22,6 @@ internal val KClass<*>.ext_kparams: List<KParameter>
  * @return The list of properties for the given class.
  */
 internal val KClass<*>.ext_kprops: List<KProperty1<out Any, *>> get() = this.memberProperties.filter { it.javaField != null }
+internal val KClass<*>.ext_name: String get() = this.simpleName.toString()
+
+public inline fun <reified T : Any> name(): String = T::class.simpleName.toString()

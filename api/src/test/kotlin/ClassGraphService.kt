@@ -1,5 +1,3 @@
-package com.urosjarc.architect.api.services
-
 import com.urosjarc.architect.annotations.DomainEntity
 import com.urosjarc.architect.annotations.Repository
 import com.urosjarc.architect.annotations.Service

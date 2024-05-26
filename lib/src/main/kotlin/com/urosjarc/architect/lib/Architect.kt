@@ -13,7 +13,7 @@ import io.github.classgraph.ClassGraph
 import io.github.classgraph.ScanResult
 import kotlin.reflect.full.memberFunctions
 
-internal class ClassGraphService : ClassService {
+internal class Architect : ClassService {
 
     override fun getState(packagePath: String): AState {
         val scanResult = ClassGraph().enableAllInfo().acceptPackages(packagePath).scan()
