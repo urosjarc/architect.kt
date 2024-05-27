@@ -6,7 +6,8 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":public"))
+    implementation(project(":annotations"))
+    implementation(project(":lib"))
 }
 
 kotlin {

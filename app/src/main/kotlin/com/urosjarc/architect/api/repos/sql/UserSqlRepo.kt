@@ -1,11 +1,11 @@
 package com.urosjarc.architect.api.repos.sql
 
-import com.urosjarc.architect.api.extend.name
+import com.urosjarc.architect.lib.extend.name
 import com.urosjarc.architect.core.domain.User
 import com.urosjarc.architect.core.repos.UserRepo
 import com.urosjarc.architect.core.types.Encrypted
 import com.urosjarc.architect.core.types.Hashed
-import com.urosjarc.architect.core.types.Id
+import com.urosjarc.architect.lib.types.Id
 import com.urosjarc.architect.core.types.encrypted
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction

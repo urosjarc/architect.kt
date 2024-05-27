@@ -1,7 +1,7 @@
-package com.urosjarc.architect.core.domain
+package com.urosjarc.architect.lib.domain
 
-import com.urosjarc.architect.DomainEntity
-import com.urosjarc.architect.core.types.Id
+import com.urosjarc.architect.annotations.DomainEntity
+import com.urosjarc.architect.lib.types.Id
 import kotlinx.serialization.Serializable
 
 @DomainEntity
@@ -20,5 +20,6 @@ public data class AProp(
     val isLateinit: Boolean,
     val isOpen: Boolean,
     val isSuspend: Boolean,
+
     val id: Id<AProp> = Id(),
 )

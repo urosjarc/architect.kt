@@ -1,7 +1,7 @@
-package com.urosjarc.architect.core.domain
+package com.urosjarc.architect.lib.domain
 
-import com.urosjarc.architect.DomainEntity
-import com.urosjarc.architect.core.types.Id
+import com.urosjarc.architect.annotations.DomainEntity
+import com.urosjarc.architect.lib.types.Id
 import kotlinx.serialization.Serializable
 
 @DomainEntity
@@ -12,5 +12,6 @@ public data class AParam(
     val type: String,
     val kind: String,
     val isOptional: Boolean,
+
     val id: Id<AParam> = Id(),
 )

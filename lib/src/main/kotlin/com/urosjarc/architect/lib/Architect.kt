@@ -1,41 +1,39 @@
-package com.urosjarc.architect.api.services
+package com.urosjarc.architect.lib
 
-import com.urosjarc.architect.annotations.DomainEntity
-import com.urosjarc.architect.annotations.Repository
-import com.urosjarc.architect.annotations.Service
-import com.urosjarc.architect.annotations.UseCase
-import com.urosjarc.architect.api.extend.*
-import com.urosjarc.architect.core.data.AClassData
-import com.urosjarc.architect.core.data.AMethodData
-import com.urosjarc.architect.core.domain.*
-import com.urosjarc.architect.core.services.ClassService
+import com.urosjarc.architect.annotations.*
+import com.urosjarc.architect.lib.data.AClassData
+import com.urosjarc.architect.lib.data.AMethodData
+import com.urosjarc.architect.lib.domain.*
+import com.urosjarc.architect.lib.extend.*
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ScanResult
 import kotlin.reflect.full.memberFunctions
 
-internal class Architect : ClassService {
+public object Architect {
 
-    override fun getState(packagePath: String): AState {
-        val scanResult = ClassGraph().enableAllInfo().acceptPackages(packagePath).scan()
+    public fun getState(vararg packagePath: String): AState {
+        val scanResult = ClassGraph().enableAllInfo().acceptPackages(*packagePath).scan()
 
         return AState(
-            domainEntities = getEntities(scanResult, DomainEntity::class.java),
-            repos = getEntities(scanResult, Repository::class.java),
-            services = getEntities(scanResult, Service::class.java),
-            useCases = getEntities(scanResult, UseCase::class.java)
+            identificators = getAnotationEntities(scanResult, Identificator::class.java),
+            domainEntities = getAnotationEntities(scanResult, DomainEntity::class.java),
+            repos = getAnotationEntities(scanResult, Repository::class.java),
+            services = getAnotationEntities(scanResult, Service::class.java),
+            useCases = getAnotationEntities(scanResult, UseCase::class.java)
         )
     }
 
-    private fun getEntities(scanResult: ScanResult, anotation: Class<out Annotation>): List<AClassData> {
+    private fun getAnotationEntities(scanResult: ScanResult, anotation: Class<out Annotation>): List<AClassData> {
         val aEntities = mutableListOf<AClassData>()
         scanResult.getClassesWithAnnotation(anotation).forEach { sr ->
 
-            val kclass = Class.forName(sr.name).kotlin //TODO: https://youtrack.jetbrains.com/issue/KT-10440
+            //TODO: https://youtrack.jetbrains.com/issue/KT-10440
+            val kclass = Class.forName(sr.name).kotlin
 
             val aClass = AClass(
                 name = kclass.simpleName!!,
                 path = sr.packageName,
-                module = sr.moduleInfo.name
+                module = sr.moduleInfo?.name
             )
 
             val constructor = AMethod(
@@ -100,4 +98,5 @@ internal class Architect : ClassService {
         }
         return aEntities
     }
+
 }

@@ -5,10 +5,12 @@ import com.urosjarc.architect.annotations.Repository
 import com.urosjarc.architect.annotations.Service
 import com.urosjarc.architect.annotations.UseCase
 import com.urosjarc.architect.api.extend.*
-import com.urosjarc.architect.core.data.AClassData
-import com.urosjarc.architect.core.data.AMethodData
+import com.urosjarc.architect.lib.data.AClassData
+import com.urosjarc.architect.lib.data.AMethodData
 import com.urosjarc.architect.core.domain.*
 import com.urosjarc.architect.core.services.ClassService
+import com.urosjarc.architect.lib.domain.*
+import com.urosjarc.architect.lib.extend.*
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ScanResult
 import kotlin.reflect.full.memberFunctions

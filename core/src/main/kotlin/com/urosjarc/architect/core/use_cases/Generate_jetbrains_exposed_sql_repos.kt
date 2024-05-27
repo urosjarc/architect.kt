@@ -1,7 +1,7 @@
 package com.urosjarc.architect.core.use_cases
 
 import com.urosjarc.architect.annotations.UseCase
-import com.urosjarc.architect.core.domain.AState
+import com.urosjarc.architect.lib.domain.AState
 
 @UseCase
 public class Generate_jetbrains_exposed_sql_repos {

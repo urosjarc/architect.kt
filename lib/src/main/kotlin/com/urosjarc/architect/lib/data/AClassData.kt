@@ -1,11 +1,9 @@
-package com.urosjarc.architect.core.data
+package com.urosjarc.architect.lib.data
 
-import com.urosjarc.architect.DomainEntity
-import com.urosjarc.architect.core.domain.AClass
-import com.urosjarc.architect.core.domain.AProp
+import com.urosjarc.architect.lib.domain.AClass
+import com.urosjarc.architect.lib.domain.AProp
 import kotlinx.serialization.Serializable
 
-@DomainEntity
 @Serializable
 public data class AClassData(
     val aClass: AClass,

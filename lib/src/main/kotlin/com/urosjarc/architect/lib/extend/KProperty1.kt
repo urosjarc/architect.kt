@@ -1,4 +1,4 @@
-package com.urosjarc.architect.api.extend
+package com.urosjarc.architect.lib.extend
 
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1

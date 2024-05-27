@@ -1,4 +1,4 @@
-package com.urosjarc.architect.core.types
+package com.urosjarc.architect.lib.types
 
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable

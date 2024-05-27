@@ -5,10 +5,11 @@ plugins {
     id("buildSrc.datetime")
 }
 dependencies {
-    implementation(project(":public"))
+    implementation(project(":annotations"))
+    implementation(project(":lib"))
     implementation(project(":core"))
-    implementation(kotlin("reflect"))
-    implementation("io.github.classgraph:classgraph:4.8.172")
+
+
 }
 
 kotlin {

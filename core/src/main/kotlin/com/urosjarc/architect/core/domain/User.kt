@@ -3,7 +3,7 @@ package com.urosjarc.architect.core.domain
 import com.urosjarc.architect.annotations.DomainEntity
 import com.urosjarc.architect.core.types.Encrypted
 import com.urosjarc.architect.core.types.Hashed
-import com.urosjarc.architect.core.types.Id
+import com.urosjarc.architect.lib.types.Id
 import kotlinx.serialization.Serializable
 
 @DomainEntity

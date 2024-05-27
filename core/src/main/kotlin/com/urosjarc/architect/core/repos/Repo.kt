@@ -1,6 +1,6 @@
 package com.urosjarc.architect.core.repos
 
-import com.urosjarc.architect.core.types.Id
+import com.urosjarc.architect.lib.types.Id
 
 public interface Repo<T> {
 
