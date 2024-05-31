@@ -8,6 +8,13 @@ import java.util.*
 @Identificator
 @Serializable
 @JvmInline
-value class Id<T>(@Contextual public val value: UUID = UUID.randomUUID()) {
+value class UId<T>(@Contextual val value: UUID = UUID.randomUUID()) {
+    override fun toString(): String = this.value.toString()
+}
+
+@Identificator
+@Serializable
+@JvmInline
+value class Id<T>(val value: Int) {
     override fun toString(): String = this.value.toString()
 }

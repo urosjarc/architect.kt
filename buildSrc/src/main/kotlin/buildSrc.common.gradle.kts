@@ -5,7 +5,7 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
 }
 kotlin {
-    jvmToolchain(19)
+    jvmToolchain(21)
 }
 repositories {
     mavenCentral()

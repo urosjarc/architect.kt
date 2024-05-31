@@ -9,5 +9,5 @@ data class Product(
     val userId: Id<User>,
     val name: String,
 
-    val id: Id<Product> = Id(),
+    val uid: UId<Product> = UId(),
 )
