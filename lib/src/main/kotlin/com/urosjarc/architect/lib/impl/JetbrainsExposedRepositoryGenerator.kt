@@ -2,7 +2,7 @@ package com.urosjarc.architect.lib.impl
 
 import com.urosjarc.architect.lib.Generator
 import com.urosjarc.architect.lib.data.AClassData
-import com.urosjarc.architect.lib.domain.AProp
+import com.urosjarc.architect.lib.data.APropData
 import com.urosjarc.architect.lib.domain.AState
 import org.apache.logging.log4j.kotlin.logger
 import java.io.File
@@ -18,13 +18,13 @@ public interface Test2 : Test {
 public class JetbrainsExposedRepositoryGenerator(
     private val interfaceFolder: File,
     private val implementationFolder: File,
-    private val mapping: List<Pair<String, (AProp) -> String>>
+    private val mapping: List<Pair<String, Pair<(APropData) -> String, (APropData) -> String>>>
 ) : Generator {
 
 
     override fun generate(aState: AState) {
 
-        aState.identificators.forEach { it: AClassData ->
+        aState.identifiers.forEach { it: AClassData ->
             this.generateBaseRepoInterface(clsData = it)
         }
 
@@ -59,27 +59,60 @@ public class JetbrainsExposedRepositoryGenerator(
 
     private fun generateBaseSqlRepo(clsData: AClassData) {
         val clsName = clsData.aClass.name
-        val valName = clsName.lowercase()
-        val lines = mutableListOf(
-            "import org.jetbrains.exposed.sql.Table",
-            "object table : Table(name = \"$valName\") {"
-        )
+        val repoName = "${clsName}SqlRepo"
+        val tableFields = this.generateTableFields(clsData = clsData)
+        val domainFields = this.generateDomainFields(clsData = clsData)
+        val imports = this.generateImports(clsData = clsData)
 
-        clsData.aProps.forEach { aProp ->
-            logger.info(aProp)
-            val dbType = mapping.first { aProp.type.startsWith(it.first) }.second(aProp)
-            lines.add("val ${aProp.name} = $dbType")
+        val text = """
+        import org.jetbrains.exposed.dao.id.UUIDTable
+        import org.jetbrains.exposed.sql.Database
+        import org.jetbrains.exposed.sql.ResultRow
+        ${imports.joinToString("\n" + " ".repeat(4 * 2))}
+        
+        internal abstract class $repoName(private val db: Database): UIdRepo<$clsName> {
+            object table: UUIDTable(name = "$clsName", columnName="id") {
+                ${tableFields.joinToString("\n" + " ".repeat(4 * 4))}
+            }
+            
+            private fun toDomain(row: ResultRow) = $clsName(
+                ${domainFields.joinToString("\n" + " ".repeat(4 * 4))}
+            )
         }
-        lines.add("")
-        lines.add("override val primaryKey = PrimaryKey(id)")
-        lines.add("}")
-
-        val text = lines.joinToString("\n")
+        """.trimIndent()
 
         File(implementationFolder, "$clsName.kt").apply {
             logger.info(this.absolutePath)
             writeText(text)
         }
+    }
+
+    private fun generateImports(clsData: AClassData): Iterable<String> {
+        val imports = mutableSetOf(clsData.aClass.packagePath)
+        clsData.aProps.forEach { imports.add(it.aProp.type) }
+        return imports.map { "import $it" }
+    }
+
+    private fun generateDomainFields(clsData: AClassData): Iterable<String> {
+        val fields = mutableListOf<String>()
+        clsData.aProps.forEach { data: APropData ->
+            val dbType = mapping.first { data.aProp.type == it.first }.second.second(data)
+            fields.add("${data.aProp.name} = $dbType,")
+        }
+
+        return fields
+    }
+
+    private fun generateTableFields(clsData: AClassData): Iterable<String> {
+        val fields = mutableListOf<String>()
+        clsData.aProps.forEach { data: APropData ->
+            if (data.aProp.name != "id") {
+                val dbType = mapping.first { data.aProp.type == it.first }.second.first(data)
+                fields.add("val ${data.aProp.name} = $dbType")
+            }
+        }
+
+        return fields
     }
 
 }

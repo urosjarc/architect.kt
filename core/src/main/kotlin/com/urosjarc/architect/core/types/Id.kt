@@ -1,11 +1,11 @@
 package com.urosjarc.architect.core.types
 
-import com.urosjarc.architect.annotations.Identificator
+import com.urosjarc.architect.annotations.Identifier
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.util.*
 
-@Identificator
+@Identifier
 @Serializable
 @JvmInline
 public value class Id<T>(@Contextual public val value: UUID = UUID.randomUUID()) {

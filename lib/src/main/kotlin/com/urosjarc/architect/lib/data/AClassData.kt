@@ -7,6 +7,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class AClassData(
     val aClass: AClass,
-    val aProps: List<AProp>,
+    val aProps: List<APropData>,
     val aMethods: List<AMethodData>
 )

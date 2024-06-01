@@ -1,6 +1,6 @@
 package com.urosjarc.architect.lib.impl
 
-import com.urosjarc.architect.lib.Architect
+import Architect
 import java.io.File
 import kotlin.test.Test
 
@@ -15,11 +15,23 @@ class Test_JetbrainsExposedRepositoryGenerator {
             interfaceFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/interfaces"),
             implementationFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/impl"),
             mapping = listOf(
-                "kotlin.String" to { "varchar(\"${it.name}\", 200)" },
-                "com.urosjarc.architect.lib.test_application.domain.UId" to { "binary(\"${it.name}\")" },
-                "com.urosjarc.architect.lib.test_application.domain.Id" to { "binary(\"${it.name}\")" },
-                "com.urosjarc.architect.lib.test_application.domain.User.Type" to { "varchar(\"${it.name}\", 200)"}
-            )
+                "kotlin.String" to Pair(
+                    { "varchar(\"${it.aProp.name}\", 200)" },
+                    { "row[table.${it.aProp.name}]" },
+                ),
+                "com.urosjarc.architect.lib.test_application.domain.UId" to Pair(
+                    { "reference(\"${it.aProp.name}\", ${it.aTypeParams[0].name}SqlRepo.table)" },
+                    { "UId(row[table.${it.aProp.name}].value)" },
+                ),
+                "com.urosjarc.architect.lib.test_application.domain.Id" to Pair(
+                    { "reference(\"${it.aProp.name}\", ${it.aTypeParams[0].name}SqlRepo.table)" },
+                    { "Id(row[table.${it.aProp.name}].value)" },
+                ),
+                "com.urosjarc.architect.lib.test_application.domain.User.Type" to Pair(
+                    { "varchar(\"${it.aProp.name}\", 200)" },
+                    { "User.Type.valueOf(row[table.${it.aProp.name}])" },
+                )
+            ),
         )
 
         exposedRepoGen.generate(aState = aState)

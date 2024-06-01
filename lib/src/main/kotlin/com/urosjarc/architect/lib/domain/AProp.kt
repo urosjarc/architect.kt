@@ -11,7 +11,8 @@ public data class AProp(
     val name: String,
     val type: String,
     val inlineType: String?,
-    val visibility: String,
+
+    val visibility: AVisibility,
     val isMutable: Boolean,
     val isOptional: Boolean,
     val isAbstract: Boolean,
@@ -20,6 +21,7 @@ public data class AProp(
     val isLateinit: Boolean,
     val isOpen: Boolean,
     val isSuspend: Boolean,
+
 
     val id: Id<AProp> = Id(),
 )

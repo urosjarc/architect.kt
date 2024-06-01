@@ -1,13 +1,17 @@
-package com.urosjarc.architect.lib
 
 import com.urosjarc.architect.annotations.*
 import com.urosjarc.architect.lib.data.AClassData
 import com.urosjarc.architect.lib.data.AMethodData
+import com.urosjarc.architect.lib.data.APropData
 import com.urosjarc.architect.lib.domain.*
 import com.urosjarc.architect.lib.extend.*
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ScanResult
+import kotlin.reflect.KCallable
+import kotlin.reflect.KParameter
+import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberFunctions
+import kotlin.reflect.full.memberProperties
 
 public object Architect {
 
@@ -15,7 +19,7 @@ public object Architect {
         val scanResult = ClassGraph().enableAllInfo().acceptPackages(*packagePath).scan()
 
         return AState(
-            identificators = getAnotationEntities(scanResult, Identificator::class.java),
+            identifiers = getAnotationEntities(scanResult, Identifier::class.java),
             domainEntities = getAnotationEntities(scanResult, DomainEntity::class.java),
             repos = getAnotationEntities(scanResult, Repository::class.java),
             services = getAnotationEntities(scanResult, Service::class.java),
@@ -23,9 +27,9 @@ public object Architect {
         )
     }
 
-    private fun getAnotationEntities(scanResult: ScanResult, anotation: Class<out Annotation>): List<AClassData> {
+    private fun getAnotationEntities(scanResult: ScanResult, annotation: Class<out Annotation>): List<AClassData> {
         val aEntities = mutableListOf<AClassData>()
-        scanResult.getClassesWithAnnotation(anotation).forEach { sr ->
+        scanResult.getClassesWithAnnotation(annotation).forEach { sr ->
 
             //TODO: https://youtrack.jetbrains.com/issue/KT-10440
             val kclass = Class.forName(sr.name).kotlin
@@ -33,24 +37,38 @@ public object Architect {
             val aClass = AClass(
                 name = kclass.simpleName!!,
                 path = sr.packageName,
-                module = sr.moduleInfo?.name
+                module = sr.moduleInfo?.name,
+                isAbstract = kclass.isAbstract,
+                isCompanion = kclass.isCompanion,
+                isData = kclass.isData,
+                isFinal = kclass.isFinal,
+                isFun = kclass.isFun,
+                isInner = kclass.isInner,
+                isOpen = kclass.isOpen,
+                isSealed = kclass.isSealed,
+                isValue = kclass.isValue,
+                visibility = AVisibility.valueOf(kclass.visibility!!.name),
             )
 
             val constructor = AMethod(
                 classId = aClass.id,
                 type = AMethod.Type.CONSTRUCTOR,
                 name = "constructor",
+                visibility = AVisibility.PUBLIC
             )
 
             val aEntity = AClassData(
                 aClass = aClass,
-                aProps = kclass.ext_kprops.map { kprop ->
-                    AProp(
+                aProps = kclass.ext_kprops.map { kprop: KProperty1<out Any, *> ->
+                    val typeInfos = kprop.returnType.toString().removeSuffix(">").split("<")
+                    val type = typeInfos.first()
+                    val typeParams = typeInfos.last().split(",")
+                    val aProp = AProp(
                         classId = aClass.id,
                         name = kprop.name,
-                        type = kprop.returnType.toString(),
+                        type = type,
                         inlineType = kprop.ext_inline?.toString(),
-                        visibility = kprop.visibility!!.name,
+                        visibility = AVisibility.valueOf(kprop.visibility!!.name),
                         isMutable = kprop.ext_isMutable,
                         isOptional = kprop.ext_isOptional,
                         isAbstract = kprop.isAbstract,
@@ -59,6 +77,17 @@ public object Architect {
                         isLateinit = kprop.isLateinit,
                         isOpen = kprop.isOpen,
                         isSuspend = kprop.isSuspend,
+                    )
+                    APropData(
+                        aProp = aProp,
+                        aTypeParams = typeParams.map {
+                            val clsName = it.split(".").last()
+                            ATypeParam(
+                                propId = aProp.id,
+                                name = clsName,
+                                path = it.removeSuffix(".$clsName")
+                            )
+                        }
                     )
                 },
                 aMethods = listOf(
@@ -78,7 +107,8 @@ public object Architect {
                     val aMethod = AMethod(
                         classId = aClass.id,
                         type = AMethod.Type.METHOD,
-                        name = mfun.name
+                        name = mfun.name,
+                        visibility = AVisibility.valueOf(mfun.visibility!!.name)
                     )
                     AMethodData(
                         aMethod = aMethod,
