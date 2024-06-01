@@ -6,8 +6,8 @@ import kotlinx.serialization.Serializable
 @DomainEntity
 @Serializable
 data class Product(
-    val userId: UId<User>,
+    val userId: Id<User>,
     val name: String,
 
-    val id: UId<Product> = UId(),
+    val id: Id<Product> = Id(),
 )

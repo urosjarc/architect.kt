@@ -1,12 +1,12 @@
 package com.urosjarc.architect.api.repos.sql
 
-import com.urosjarc.architect.lib.extend.name
 import com.urosjarc.architect.core.domain.User
 import com.urosjarc.architect.core.repos.UserRepo
 import com.urosjarc.architect.core.types.Encrypted
 import com.urosjarc.architect.core.types.Hashed
-import com.urosjarc.architect.lib.types.Id
 import com.urosjarc.architect.core.types.encrypted
+import com.urosjarc.architect.lib.extend.name
+import com.urosjarc.architect.lib.types.Id
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -40,6 +40,18 @@ internal class UserSqlRepo(val db: Database) : UserRepo {
                 .map(::toDomain)
                 .singleOrNull()
         }
+
+    fun delete(users: List<User>): List<User> {
+        val t = table
+        return transaction(db) {
+            t.batchInsert(users) {
+                this[t.id] = it.id.value
+                this[t.email] = it.email.toString()
+                this[t.password] = it.password.toString()
+                this[t.type] = it.type.name
+            }.map(::toDomain)
+        }
+    }
 
     override fun find(email: String): List<User> {
         return transaction(db) {

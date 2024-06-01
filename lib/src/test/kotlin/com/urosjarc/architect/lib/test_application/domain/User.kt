@@ -10,7 +10,7 @@ data class User(
     val password: String,
     val type: Type,
 
-    val id: UId<User>,
+    val id: Id<User>,
 ) {
     enum class Type { ADMIN, USER }
 }
