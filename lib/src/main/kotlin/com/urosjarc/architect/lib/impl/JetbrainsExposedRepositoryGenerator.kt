@@ -7,12 +7,17 @@ import com.urosjarc.architect.lib.domain.AState
 import java.io.File
 
 private typealias Mapping = List<Pair<String, Triple<(APropData) -> String, (APropData) -> String, (APropData) -> String>>>
+
 public class JetbrainsExposedRepositoryGenerator(
     private val interfaceFolder: File,
     private val sqlFolder: File,
     private val repoFolder: File,
     mapping: Mapping
 ) : Generator {
+
+    private val interfacePackage = this.interfaceFolder.absolutePath.split("/kotlin/").last().replace("/", ".")
+    private val sqlPackage = this.sqlFolder.absolutePath.split("/kotlin/").last().replace("/", ".")
+    private val repoPackage = this.repoFolder.absolutePath.split("/kotlin/").last().replace("/", ".")
 
     private val mapping: Mapping = mapping + listOf(
         "kotlin.String" to Triple(
@@ -52,9 +57,11 @@ public class JetbrainsExposedRepositoryGenerator(
         val repoName = "${clsName}Repo"
 
         val text = """
+        package $interfacePackage
+        
         import $pacPath.$clsName
         
-        internal interface $repoName : Repo<$clsName> {
+        public interface $repoName : Repo<$clsName> {
         }
         """.trimIndent()
 
@@ -67,8 +74,10 @@ public class JetbrainsExposedRepositoryGenerator(
         val repoName = "${clsName}SqlRepo"
 
         val text = """
+        package $repoPackage
+        
         import org.jetbrains.exposed.sql.Database
-        import $pacPath.$clsName
+        import $sqlPackage.${clsName}Sql
         
         public class $repoName(db: Database) : ${clsName}Sql(db=db) {
         }
@@ -83,9 +92,11 @@ public class JetbrainsExposedRepositoryGenerator(
         val baseRepoName = "Repo"
 
         val text = """
+        package $interfacePackage
+        
         import $pacPath.$clsName
         
-        internal interface $baseRepoName<T> {
+        public interface $baseRepoName<T> {
             public suspend fun insert(obj: T): T?
             public suspend fun insert(objs: Iterable<T>): List<T> 
             public suspend fun update(obj: T): T?
@@ -110,6 +121,9 @@ public class JetbrainsExposedRepositoryGenerator(
         val updateFields = this.generateUpdateFields(clsData = clsData)
 
         val text = """
+        package $sqlPackage
+        
+        import $interfacePackage.Repo
         import org.jetbrains.exposed.dao.id.UUIDTable
         import org.jetbrains.exposed.sql.*
         import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -124,9 +138,11 @@ public class JetbrainsExposedRepositoryGenerator(
             private fun toDomain(row: ResultRow) = $clsName(
                 ${domainFields.joinToString("\n" + " ".repeat(4 * 4))}
             )
+           
+           internal suspend fun <T> transaction(block: suspend (t: Transaction) -> T): T = newSuspendedTransaction(Dispatchers.IO, db) { block(this) }
             
             public override suspend fun insert(obj: $clsName): $clsName? {
-                return newSuspendedTransaction(Dispatchers.IO, db) {
+                return this.transaction {
                     table.insert {
                         ${insertFields.joinToString("\n" + " ".repeat(4 * 6))}
                     }.resultedValues?.singleOrNull()?.let(::toDomain)
@@ -135,7 +151,7 @@ public class JetbrainsExposedRepositoryGenerator(
             
             public override suspend fun insert(objs: Iterable<$clsName>): List<$clsName> {
                 val t = table
-                return newSuspendedTransaction(Dispatchers.IO, db) {
+                return this.transaction {
                     t.batchInsert(objs) {
                         ${batchInsertFields.joinToString("\n" + " ".repeat(4 * 6))}
                     }.map(::toDomain)
@@ -143,7 +159,7 @@ public class JetbrainsExposedRepositoryGenerator(
             }
             
             public override suspend fun update(obj: $clsName): $clsName? {
-                return newSuspendedTransaction(Dispatchers.IO, db) {
+                return this.transaction {
                     table.updateReturning(where = { table.id eq obj.id.value }) { 
                         ${updateFields.joinToString("\n" + " ".repeat(4 * 6))}
                     }.singleOrNull()?.let(::toDomain)
@@ -151,7 +167,7 @@ public class JetbrainsExposedRepositoryGenerator(
             } 
             
             public override suspend fun delete(id: Id<$clsName>): $clsName? {
-                return newSuspendedTransaction(Dispatchers.IO, db) {
+                return this.transaction {
                     table.deleteReturning {
                         table.id eq id.value
                     }.singleOrNull()?.let(::toDomain)
@@ -159,13 +175,13 @@ public class JetbrainsExposedRepositoryGenerator(
             } 
     
             public override suspend fun select(): List<$clsName> {
-                return newSuspendedTransaction(Dispatchers.IO, db) {
+                return this.transaction {
                     table.selectAll().map(::toDomain)
                 }
             }
 
             public override suspend fun select(id: Id<$clsName>): $clsName? {
-                return newSuspendedTransaction(Dispatchers.IO, db) {
+                return this.transaction {
                     table.selectAll()
                         .where { table.id eq id.value }
                         .singleOrNull()?.let(::toDomain)

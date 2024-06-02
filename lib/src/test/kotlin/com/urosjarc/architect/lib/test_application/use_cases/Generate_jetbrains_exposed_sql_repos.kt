@@ -4,7 +4,9 @@ import com.urosjarc.architect.annotations.UseCase
 import com.urosjarc.architect.lib.domain.AState
 
 @UseCase
-class Generate_jetbrains_exposed_sql_repos {
+class Generate_jetbrains_exposed_sql_repos(
+//    private val userRepo: UserRepo
+) {
 
     sealed interface Result {
         data class OK(val aState: AState) : Result
