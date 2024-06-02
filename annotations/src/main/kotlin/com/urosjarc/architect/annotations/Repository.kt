@@ -1,3 +1,3 @@
 package com.urosjarc.architect.annotations
 
-public annotation class Repository<T>
+public annotation class Repository

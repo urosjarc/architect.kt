@@ -60,7 +60,9 @@ public class JetbrainsExposedRepositoryGenerator(
         package $interfacePackage
         
         import $pacPath.$clsName
+        import com.urosjarc.architect.annotations.Repository
         
+        @Repository
         public interface $repoName : Repo<$clsName> {
         }
         """.trimIndent()
