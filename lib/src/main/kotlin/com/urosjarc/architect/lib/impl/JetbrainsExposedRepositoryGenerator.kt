@@ -6,20 +6,36 @@ import com.urosjarc.architect.lib.data.APropData
 import com.urosjarc.architect.lib.domain.AState
 import java.io.File
 
-public interface Test {
-    public fun test(): String
-}
-
-public interface Test2 : Test {
-    public fun test2(): String
-}
-
+private typealias Mapping = List<Pair<String, Triple<(APropData) -> String, (APropData) -> String, (APropData) -> String>>>
 public class JetbrainsExposedRepositoryGenerator(
     private val interfaceFolder: File,
     private val sqlFolder: File,
     private val repoFolder: File,
-    private val mapping: List<Pair<String, Triple<(APropData) -> String, (APropData) -> String, (APropData) -> String>>>
+    mapping: Mapping
 ) : Generator {
+
+    private val mapping: Mapping = mapping + listOf(
+        "kotlin.String" to Triple(
+            { "varchar(\"${it.aProp.name}\", 200)" },
+            { "row[table.${it.aProp.name}]" },
+            { "" },
+        ),
+        "kotlin.Int" to Triple(
+            { "integer(\"${it.aProp.name}\")" },
+            { "row[table.${it.aProp.name}]" },
+            { "" },
+        ),
+        "kotlin.Float" to Triple(
+            { "float(\"${it.aProp.name}\")" },
+            { "row[table.${it.aProp.name}]" },
+            { "" },
+        ),
+        "kotlin.Boolean" to Triple(
+            { "bool(\"${it.aProp.name}\")" },
+            { "row[table.${it.aProp.name}]" },
+            { "" },
+        ),
+    )
 
     override fun generate(aState: AState) {
         this.generateDomainEntityRepo(clsData = aState.identifiers[0])
@@ -70,12 +86,12 @@ public class JetbrainsExposedRepositoryGenerator(
         import $pacPath.$clsName
         
         internal interface $baseRepoName<T> {
-            public fun insert(obj: T): T?
-            public fun insert(objs: Iterable<T>): List<T> 
-            public fun update(obj: T): T?
-            public fun delete(id: Id<T>): T?
-            public fun select(id: Id<T>): T?
-            public fun select(): List<T>
+            public suspend fun insert(obj: T): T?
+            public suspend fun insert(objs: Iterable<T>): List<T> 
+            public suspend fun update(obj: T): T?
+            public suspend fun delete(id: Id<T>): T?
+            public suspend fun select(id: Id<T>): T?
+            public suspend fun select(): List<T>
         }
         """.trimIndent()
 
@@ -96,7 +112,8 @@ public class JetbrainsExposedRepositoryGenerator(
         val text = """
         import org.jetbrains.exposed.dao.id.UUIDTable
         import org.jetbrains.exposed.sql.*
-        import org.jetbrains.exposed.sql.transactions.transaction
+        import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+        import kotlinx.coroutines.Dispatchers
         ${imports.joinToString("\n" + " ".repeat(4 * 2))}
         
         public abstract class $repoName(private val db: Database) : Repo<$clsName> {
@@ -108,53 +125,53 @@ public class JetbrainsExposedRepositoryGenerator(
                 ${domainFields.joinToString("\n" + " ".repeat(4 * 4))}
             )
             
-            public override fun insert(obj: $clsName): $clsName? {
-                return transaction(db) {
+            public override suspend fun insert(obj: $clsName): $clsName? {
+                return newSuspendedTransaction(Dispatchers.IO, db) {
                     table.insert {
                         ${insertFields.joinToString("\n" + " ".repeat(4 * 6))}
                     }.resultedValues?.singleOrNull()?.let(::toDomain)
                 }
             }
             
-            public override fun insert(objs: Iterable<$clsName>): List<$clsName> {
+            public override suspend fun insert(objs: Iterable<$clsName>): List<$clsName> {
                 val t = table
-                return transaction(db) {
+                return newSuspendedTransaction(Dispatchers.IO, db) {
                     t.batchInsert(objs) {
                         ${batchInsertFields.joinToString("\n" + " ".repeat(4 * 6))}
                     }.map(::toDomain)
                 }
             }
             
-            public override fun update(obj: $clsName): $clsName? {
-                return transaction(db) {
+            public override suspend fun update(obj: $clsName): $clsName? {
+                return newSuspendedTransaction(Dispatchers.IO, db) {
                     table.updateReturning(where = { table.id eq obj.id.value }) { 
                         ${updateFields.joinToString("\n" + " ".repeat(4 * 6))}
                     }.singleOrNull()?.let(::toDomain)
                 }
             } 
             
-            public override fun delete(id: Id<$clsName>): $clsName? {
-                return transaction(db) {
+            public override suspend fun delete(id: Id<$clsName>): $clsName? {
+                return newSuspendedTransaction(Dispatchers.IO, db) {
                     table.deleteReturning {
                         table.id eq id.value
                     }.singleOrNull()?.let(::toDomain)
                 }
             } 
     
-            public override fun select(): List<$clsName> {
-                return transaction(db) {
+            public override suspend fun select(): List<$clsName> {
+                return newSuspendedTransaction(Dispatchers.IO, db) {
                     table.selectAll().map(::toDomain)
                 }
             }
 
-            public override fun select(id: Id<$clsName>): $clsName? {
-                return transaction(db) {
+            public override suspend fun select(id: Id<$clsName>): $clsName? {
+                return newSuspendedTransaction(Dispatchers.IO, db) {
                     table.selectAll()
                         .where { table.id eq id.value }
-                        .map(::toDomain)
-                        .singleOrNull()
+                        .singleOrNull()?.let(::toDomain)
                 }
             }
+
         }
         """.trimIndent()
 
