@@ -4,9 +4,9 @@ import com.urosjarc.architect.annotations.UseCase
 import com.urosjarc.architect.lib.test_application.repos.UserRepo
 
 @UseCase
-class Seed_repos(
+class Another_level(
     private val userRepo: UserRepo,
-    private val generateJetbrainsExposedSqlRepos: Generate_jetbrains_exposed_sql_repos
+    private val seedRepos: Seed_repos
 ) {
 
     fun now() {

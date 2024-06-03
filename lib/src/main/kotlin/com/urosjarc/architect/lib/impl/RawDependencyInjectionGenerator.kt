@@ -11,27 +11,48 @@ public class RawDependencyInjectionGenerator(
 
     private data class AClassDataNode(
         val aClassData: AClassData,
-        val dependencies: MutableList<AClassDataNode> = mutableListOf()
+        val dependencies: MutableList<AClassDataNode> = mutableListOf(),
+        var active: Boolean = true
     ) {
         override fun toString(): String {
             return aClassData.aClass.packagePath
         }
     }
+
     private val allUseCases = mutableMapOf<String, AClassDataNode>()
     private var allOtherDeps = mapOf<String, AClassDataNode>()
 
     override fun generate(aState: AState) {
 
-        allOtherDeps = (aState.domainEntities + aState.repos + aState.services).map { it.aClass.packagePath to AClassDataNode(it) }.toMap()
+        /** GET REPOS AND SERVICES */
+        allOtherDeps = (aState.repos + aState.services).map { it.aClass.packagePath to AClassDataNode(it) }.toMap()
 
+        /** FILL USECASES */
         aState.useCases.forEach { allUseCases[it.aClass.packagePath] = AClassDataNode(aClassData = it) }
-        aState.useCases.forEach { it: AClassData ->
-            val aClassDataNode = AClassDataNode(aClassData = it)
-            it.aProps.forEach {
-                println(it.aProp.type)
-                val dep = allUseCases[it.aProp.type] ?: allOtherDeps[it.aProp.type]
-                if(dep != null) aClassDataNode.dependencies.add(dep)
+
+        /** CREATE USE CASE GRAPH TREE */
+        allUseCases.forEach { packagePath, useCase: AClassDataNode ->
+            useCase.aClassData.aProps.forEach {
+                val dep = allUseCases[it.aProp.type]
+                if (dep != null) {
+                    useCase.dependencies.add(dep)
+                }
             }
+        }
+
+        repeat(allUseCases.size) {
+
+            val useCases = allUseCases.filter { it.value.active && it.value.dependencies.filter { it.active }.isEmpty() }
+
+            if(useCases.isEmpty()) return@repeat
+
+
+            useCases.forEach { packagePath, aClassDataNode ->
+                println(packagePath)
+                aClassDataNode.active = false
+            }
+
+            println("Next iteration")
         }
 
         //TODO: Build App dependency object.

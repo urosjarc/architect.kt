@@ -12,4 +12,6 @@ public data class ATypeParam(
     val path: String,
 
     val id: Id<ATypeParam> = Id(),
-)
+) {
+    val packagePath: String get() = "$path.$name"
+}

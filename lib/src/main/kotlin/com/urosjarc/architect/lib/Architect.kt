@@ -1,4 +1,3 @@
-
 import com.urosjarc.architect.annotations.*
 import com.urosjarc.architect.lib.data.AClassData
 import com.urosjarc.architect.lib.data.AMethodData
@@ -7,11 +6,8 @@ import com.urosjarc.architect.lib.domain.*
 import com.urosjarc.architect.lib.extend.*
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ScanResult
-import kotlin.reflect.KCallable
-import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberFunctions
-import kotlin.reflect.full.memberProperties
 
 public object Architect {
 
@@ -54,6 +50,7 @@ public object Architect {
                 classId = aClass.id,
                 type = AMethod.Type.CONSTRUCTOR,
                 name = "constructor",
+                returnType = null,
                 visibility = AVisibility.PUBLIC
             )
 
@@ -108,6 +105,7 @@ public object Architect {
                         classId = aClass.id,
                         type = AMethod.Type.METHOD,
                         name = mfun.name,
+                        returnType = mfun.returnType.toString(),
                         visibility = AVisibility.valueOf(mfun.visibility!!.name)
                     )
                     AMethodData(
@@ -128,5 +126,4 @@ public object Architect {
         }
         return aEntities
     }
-
 }

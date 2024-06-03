@@ -9,6 +9,7 @@ public data class AMethod(
     val type: Type,
     val name: String,
     val visibility: AVisibility,
+    val returnType: String?,
 
     val id: Id<AMethod> = Id(),
 ) {
