@@ -1,5 +1,6 @@
 import com.urosjarc.architect.annotations.*
 import com.urosjarc.architect.lib.data.AClassData
+import com.urosjarc.architect.lib.data.AClassDataNode
 import com.urosjarc.architect.lib.data.AMethodData
 import com.urosjarc.architect.lib.data.APropData
 import com.urosjarc.architect.lib.domain.*
@@ -21,6 +22,41 @@ public object Architect {
             services = getAnotationEntities(scanResult, Service::class.java),
             useCases = getAnotationEntities(scanResult, UseCase::class.java)
         )
+    }
+
+    public fun getOrderedDependencies(aState: AState): List<AClassDataNode> {
+        val allDependencies = (aState.repos + aState.services + aState.useCases)
+            .map { it.aClass.packagePath to AClassDataNode(it) }.toMap()
+
+        /** CREATE CLASS GRAPH */
+        allDependencies.forEach { packagePath, useCase: AClassDataNode ->
+            useCase.aClassData.aProps.forEach {
+                val dep = allDependencies[it.aProp.type]
+                if (dep != null) {
+                    useCase.dependencies.add(dep)
+                }
+            }
+        }
+
+        val orderedDependencies = mutableListOf<AClassDataNode>()
+
+        /**  VISIT CLASS GRAPH FROM THE BOTTOM UP */
+        repeat(allDependencies.size) {
+
+            /** GET ALL DEPENDENCIES THAT ARE STILL IN ACTIVE STATE AND HAVE ACTIVE DEPENDENCIES */
+            val dependencies = allDependencies.filter { it.value.active && it.value.dependencies.filter { it.active }.isEmpty() }
+
+            /** IF NO DEPENDENCIES ARE FOUND WE ARE FINISHED */
+            if (dependencies.isEmpty()) return@repeat
+
+            /** IF YOU VISIT AND HANDLE DEPENDENCY THEN MAKE IN NON ACTIVE */
+            dependencies.forEach { packagePath, aClassDataNode ->
+                orderedDependencies.add(aClassDataNode)
+                aClassDataNode.active = false
+            }
+
+        }
+        return orderedDependencies
     }
 
     private fun getAnotationEntities(scanResult: ScanResult, annotation: Class<out Annotation>): List<AClassData> {
@@ -126,4 +162,5 @@ public object Architect {
         }
         return aEntities
     }
+
 }
