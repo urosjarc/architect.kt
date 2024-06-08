@@ -7,7 +7,7 @@ import com.urosjarc.architect.lib.test_application.use_cases.base.Generate_jetbr
 @UseCase
 class Seed_repos(
     private val userRepo: UserRepo,
-    private val generateJetbrainsExposedSqlRepos: Generate_jetbrains_exposed_sql_repos
+    private val generate_jetbrains_exposed_sql_repos: Generate_jetbrains_exposed_sql_repos
 ) {
 
     fun now() {

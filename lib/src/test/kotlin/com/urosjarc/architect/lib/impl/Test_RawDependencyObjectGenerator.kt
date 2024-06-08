@@ -13,6 +13,8 @@ class Test_RawDependencyObjectGenerator {
 
         val di = RawDependencyObjectGenerator(
             appFile = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/App.kt"),
+            startMark = "//START MARK",
+            endMark = "//END MARK"
         )
 
         di.generate(aState = aState)

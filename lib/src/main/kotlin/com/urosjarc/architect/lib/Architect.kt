@@ -186,11 +186,11 @@ public object Architect {
 
             val folders = it.folders
             var currentFolderNode = rootFolder
-            while(folders.isNotEmpty()) {
+            while (folders.isNotEmpty()) {
                 val folderName = folders.removeFirst()
                 val nextFolderNode = currentFolderNode.children.firstOrNull { it.folder == folderName }
-                if(nextFolderNode == null) {
-                    val folderNode = FolderNode(folder = folderName, level = currentFolderNode.level+1)
+                if (nextFolderNode == null) {
+                    val folderNode = FolderNode(folder = folderName, level = currentFolderNode.level + 1)
                     currentFolderNode.children.add(folderNode)
                     currentFolderNode = folderNode
                 } else {

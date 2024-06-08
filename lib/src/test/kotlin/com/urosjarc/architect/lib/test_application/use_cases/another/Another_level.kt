@@ -7,7 +7,7 @@ import com.urosjarc.architect.lib.test_application.use_cases.base.Seed_repos
 @UseCase
 class Another_level(
     private val userRepo: UserRepo,
-    private val seedRepos: Seed_repos
+    private val seed_repos: Seed_repos
 ) {
 
     fun now() {

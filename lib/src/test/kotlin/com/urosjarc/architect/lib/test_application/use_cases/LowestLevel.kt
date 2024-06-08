@@ -6,8 +6,8 @@ import com.urosjarc.architect.lib.test_application.use_cases.base.Generate_jetbr
 
 @UseCase
 class LowestLevel(
-    private val generateJetbrainsExposedSqlRepos: Generate_jetbrains_exposed_sql_repos,
-    private val anotherLevel: Another_level
+    private val generate_jetbrains_exposed_sql_repos: Generate_jetbrains_exposed_sql_repos,
+    private val another_level: Another_level
 ) {
 
     fun now() {
