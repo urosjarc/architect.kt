@@ -33,10 +33,10 @@ public class RawDependencyObjectGenerator(
             }
             if(line.contains(endMark)) {
                 ignore = false
-                newLines.add("    public fun init(){")
+                newLines.add("    public fun initDependencies(){")
                 newLines.addAll(injection)
                 newLines.add("    }")
-                newLines.add("    public fun check(){")
+                newLines.add("    public fun checkDependencies(){")
                 newLines.addAll(check)
                 newLines.add("    }")
                 newLines.add(line)
@@ -52,7 +52,7 @@ public class RawDependencyObjectGenerator(
         node.aClassDatas.forEach {
             val variable = it.aClass.name.replaceFirstChar { it.lowercase(Locale.getDefault()) }
             lines.add("    ".repeat(node.level + 1) + "lateinit var ${variable}: ${it.aClass.name}")
-            check.add("    ".repeat(2) + "println(${variable})")
+            check.add("    ".repeat(2) + "logger.info(${variable})")
         }
         node.children.forEach { this.recursion(node = it, lines = lines, check = check) }
         if (node.folder != null) lines.add("    ".repeat(node.level) + "}")
@@ -68,13 +68,16 @@ public class RawDependencyObjectGenerator(
             val args = mutableListOf<String>()
             aClassDataNode.dependencies.forEach { di: AClassDataNode ->
                 val di_varle = di.aClassData.aClass.name.replaceFirstChar { it.lowercase(Locale.getDefault()) }
-                args.add("    ".repeat(3) + "    $di_varle = $di_varle,")
+                args.add("    ".repeat(3) + "$di_varle = $di_varle,")
             }
 
             if(args.isNotEmpty()) {
-
+                lines.addAll(args)
+                lines.add("    ".repeat(2) + ")")
+            } else {
+                val lastLine = lines.removeLast()
+                lines.add("$lastLine)")
             }
-            lines.add("    ".repeat(2) + ")")
         }
 
         return lines
