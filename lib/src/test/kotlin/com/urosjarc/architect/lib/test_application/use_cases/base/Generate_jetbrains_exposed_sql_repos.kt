@@ -1,4 +1,4 @@
-package com.urosjarc.architect.lib.test_application.use_cases
+package com.urosjarc.architect.lib.test_application.use_cases.base
 
 import com.urosjarc.architect.annotations.UseCase
 import com.urosjarc.architect.lib.domain.AState

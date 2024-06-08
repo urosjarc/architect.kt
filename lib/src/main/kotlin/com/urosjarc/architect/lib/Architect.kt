@@ -1,8 +1,5 @@
 import com.urosjarc.architect.annotations.*
-import com.urosjarc.architect.lib.data.AClassData
-import com.urosjarc.architect.lib.data.AClassDataNode
-import com.urosjarc.architect.lib.data.AMethodData
-import com.urosjarc.architect.lib.data.APropData
+import com.urosjarc.architect.lib.data.*
 import com.urosjarc.architect.lib.domain.*
 import com.urosjarc.architect.lib.extend.*
 import io.github.classgraph.ClassGraph
@@ -24,9 +21,27 @@ public object Architect {
         )
     }
 
+    public fun getClassesFolders(aClassDatas: List<AClassData>, base: List<String>): MutableMap<AClassData, MutableList<String>> {
+        /** CALCULATE BASE FOLDERS */
+        val packagePaths = aClassDatas.map { it.aClass.path.split(".").toSet() }
+        var basePath = packagePaths.first()
+        packagePaths.forEach { basePath = basePath.intersect(it) }
+
+        /** CALCULATE DISTINCT FOLDERS */
+        val classFolders = mutableMapOf<AClassData, MutableList<String>>()
+        aClassDatas.forEach { classFolders[it] = (base + (it.aClass.path.split(".").toSet() - basePath)).toMutableList() }
+        return classFolders
+    }
+
     public fun getOrderedDependencies(aState: AState): List<AClassDataNode> {
+        /** GET OBJECT FOLDERS INTO WHICH DEPENDENCIES CAN BE PUTED */
+        val classFolders = this.getClassesFolders(aState.repos, listOf("repos")) +
+                this.getClassesFolders(aState.services, listOf("services")) +
+                this.getClassesFolders(aState.useCases, listOf("usecases"))
+
+        /** GET ALL CLASS NODES */
         val allDependencies = (aState.repos + aState.services + aState.useCases)
-            .map { it.aClass.packagePath to AClassDataNode(it) }.toMap()
+            .map { it.aClass.packagePath to AClassDataNode(it, folders = classFolders[it]!!) }.toMap()
 
         /** CREATE CLASS GRAPH */
         allDependencies.forEach { packagePath, useCase: AClassDataNode ->
@@ -163,4 +178,28 @@ public object Architect {
         return aEntities
     }
 
+    public fun getFolderNodes(aState: AState): FolderNode {
+        val orderedDependencies = this.getOrderedDependencies(aState = aState)
+        val rootFolder = FolderNode()
+
+        orderedDependencies.forEach { it: AClassDataNode ->
+
+            val folders = it.folders
+            var currentFolderNode = rootFolder
+            while(folders.isNotEmpty()) {
+                val folderName = folders.removeFirst()
+                val nextFolderNode = currentFolderNode.children.firstOrNull { it.folder == folderName }
+                if(nextFolderNode == null) {
+                    val folderNode = FolderNode(folder = folderName)
+                    currentFolderNode.children.add(folderNode)
+                    currentFolderNode = folderNode
+                } else {
+                    currentFolderNode = nextFolderNode
+                }
+            }
+            currentFolderNode.aClassDatas.add(it.aClassData)
+        }
+
+        return rootFolder
+    }
 }
