@@ -180,7 +180,7 @@ public object Architect {
 
     public fun getFolderNodes(aState: AState): FolderNode {
         val orderedDependencies = this.getOrderedDependencies(aState = aState)
-        val rootFolder = FolderNode()
+        val rootFolder = FolderNode(level = 0)
 
         orderedDependencies.forEach { it: AClassDataNode ->
 
@@ -190,7 +190,7 @@ public object Architect {
                 val folderName = folders.removeFirst()
                 val nextFolderNode = currentFolderNode.children.firstOrNull { it.folder == folderName }
                 if(nextFolderNode == null) {
-                    val folderNode = FolderNode(folder = folderName)
+                    val folderNode = FolderNode(folder = folderName, level = currentFolderNode.level+1)
                     currentFolderNode.children.add(folderNode)
                     currentFolderNode = folderNode
                 } else {
