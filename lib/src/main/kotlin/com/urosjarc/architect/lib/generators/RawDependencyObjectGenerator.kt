@@ -1,4 +1,4 @@
-package com.urosjarc.architect.lib.impl
+package com.urosjarc.architect.lib.generators
 
 import Architect
 import com.urosjarc.architect.lib.Generator
@@ -25,13 +25,13 @@ public class RawDependencyObjectGenerator(
         val newLines = mutableListOf<String>()
         var ignore = false
         for (line in appFile.readLines()) {
-            if(line.contains(startMark)) {
+            if (line.contains(startMark)) {
                 ignore = true
                 newLines.add(line)
                 newLines.addAll(lines)
                 continue
             }
-            if(line.contains(endMark)) {
+            if (line.contains(endMark)) {
                 ignore = false
                 newLines.add("    public fun initDependencies(){")
                 newLines.addAll(injection)
@@ -42,7 +42,7 @@ public class RawDependencyObjectGenerator(
                 newLines.add(line)
                 continue
             }
-            if(!ignore) newLines.add(line)
+            if (!ignore) newLines.add(line)
         }
         appFile.writeText(newLines.joinToString("\n"))
     }
@@ -57,6 +57,7 @@ public class RawDependencyObjectGenerator(
         node.children.forEach { this.recursion(node = it, lines = lines, check = check) }
         if (node.folder != null) lines.add("    ".repeat(node.level) + "}")
     }
+
     public fun injection(aState: AState): MutableList<String> {
         val lines = mutableListOf<String>()
 
@@ -71,7 +72,7 @@ public class RawDependencyObjectGenerator(
                 args.add("    ".repeat(3) + "$di_varle = $di_varle,")
             }
 
-            if(args.isNotEmpty()) {
+            if (args.isNotEmpty()) {
                 lines.addAll(args)
                 lines.add("    ".repeat(2) + ")")
             } else {

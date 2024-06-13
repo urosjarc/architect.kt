@@ -1,4 +1,4 @@
-package com.urosjarc.architect.lib.impl
+package com.urosjarc.architect.lib.generators
 
 import com.urosjarc.architect.lib.Generator
 import com.urosjarc.architect.lib.domain.AState

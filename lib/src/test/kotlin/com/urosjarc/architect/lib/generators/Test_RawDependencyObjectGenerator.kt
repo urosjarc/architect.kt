@@ -1,4 +1,4 @@
-package com.urosjarc.architect.lib.impl
+package com.urosjarc.architect.lib.generators
 
 import Architect
 import java.io.File

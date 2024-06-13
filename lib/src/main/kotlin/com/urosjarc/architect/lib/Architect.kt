@@ -111,10 +111,16 @@ public object Architect {
                     val typeInfos = kprop.returnType.toString().removeSuffix(">").split("<")
                     val type = typeInfos.first()
                     val typeParams = typeInfos.last().split(",")
+
+                    val annotations = kclass.ext_kparams
+                        .firstOrNull { it.name == kprop.name }?.annotations
+                        ?.map { it.annotationClass.simpleName.toString() }
+
                     val aProp = AProp(
                         classId = aClass.id,
                         name = kprop.name,
                         type = type,
+                        annotations = annotations ?: listOf(),
                         inlineType = kprop.ext_inline?.toString(),
                         visibility = AVisibility.valueOf(kprop.visibility!!.name),
                         isMutable = kprop.ext_isMutable,

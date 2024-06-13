@@ -1,9 +1,12 @@
-package com.urosjarc.architect.lib.impl
+package com.urosjarc.architect.lib.generators
 
+import com.urosjarc.architect.annotations.Mod
+import com.urosjarc.architect.annotations.New
 import com.urosjarc.architect.lib.Generator
 import com.urosjarc.architect.lib.data.AClassData
 import com.urosjarc.architect.lib.data.APropData
 import com.urosjarc.architect.lib.domain.AState
+import com.urosjarc.architect.lib.extend.name
 import java.io.File
 
 private typealias Mapping = List<Pair<String, Triple<(APropData) -> String, (APropData) -> String, (APropData) -> String>>>
@@ -12,9 +15,11 @@ public class JetbrainsExposedRepositoryGenerator(
     private val interfaceFolder: File,
     private val sqlFolder: File,
     private val repoFolder: File,
+    modelFolder: File,
     mapping: Mapping
 ) : Generator {
 
+    private val domainModelGen = DomainModelsGenerator(modelFolder = modelFolder)
     private val interfacePackage = this.interfaceFolder.absolutePath.split("/kotlin/").last().replace("/", ".")
     private val sqlPackage = this.sqlFolder.absolutePath.split("/kotlin/").last().replace("/", ".")
     private val repoPackage = this.repoFolder.absolutePath.split("/kotlin/").last().replace("/", ".")
@@ -43,12 +48,15 @@ public class JetbrainsExposedRepositoryGenerator(
     )
 
     override fun generate(aState: AState) {
+
         this.generateDomainEntityRepo(clsData = aState.identifiers[0])
         aState.domainEntities.forEach { it: AClassData ->
             this.generateRepo(clsData = it)
             this.generateSql(clsData = it)
             this.generateSqlRepo(clsData = it)
         }
+
+        this.domainModelGen.generate(aState = aState)
     }
 
     private fun generateRepo(clsData: AClassData) {
@@ -63,7 +71,7 @@ public class JetbrainsExposedRepositoryGenerator(
         import com.urosjarc.architect.annotations.Repository
         
         @Repository
-        public interface $repoName : Repo<$clsName> {
+        public interface $repoName : Repo<$clsName, ${clsName}New, ${clsName}Mod> {
         }
         """.trimIndent()
 
@@ -98,10 +106,10 @@ public class JetbrainsExposedRepositoryGenerator(
         
         import $pacPath.$clsName
         
-        public interface $baseRepoName<T> {
-            public suspend fun insert(obj: T): T?
-            public suspend fun insert(objs: Iterable<T>): List<T> 
-            public suspend fun update(obj: T): T?
+        public interface $baseRepoName<T,N,U> {
+            public suspend fun insert(obj: N): T?
+            public suspend fun insert(objs: Iterable<N>): List<T> 
+            public suspend fun update(obj: U): T?
             public suspend fun delete(id: Id<T>): T?
             public suspend fun select(id: Id<T>): T?
             public suspend fun select(): List<T>
@@ -132,7 +140,7 @@ public class JetbrainsExposedRepositoryGenerator(
         import kotlinx.coroutines.Dispatchers
         ${imports.joinToString("\n" + " ".repeat(4 * 2))}
         
-        public abstract class $repoName(private val db: Database) : Repo<$clsName> {
+        public abstract class $repoName(private val db: Database) : Repo<$clsName, ${clsName}New, ${clsName}Mod> {
             object table : UUIDTable(name = "$clsName", columnName = "id") {
                 ${tableFields.joinToString("\n" + " ".repeat(4 * 4))}
             }
@@ -143,7 +151,7 @@ public class JetbrainsExposedRepositoryGenerator(
            
            internal suspend fun <T> transaction(block: suspend (t: Transaction) -> T): T = newSuspendedTransaction(Dispatchers.IO, db) { block(this) }
             
-            public override suspend fun insert(obj: $clsName): $clsName? {
+            public override suspend fun insert(obj: ${clsName}New): $clsName? {
                 return this.transaction {
                     table.insert {
                         ${insertFields.joinToString("\n" + " ".repeat(4 * 6))}
@@ -151,7 +159,7 @@ public class JetbrainsExposedRepositoryGenerator(
                 }
             }
             
-            public override suspend fun insert(objs: Iterable<$clsName>): List<$clsName> {
+            public override suspend fun insert(objs: Iterable<${clsName}New>): List<$clsName> {
                 val t = table
                 return this.transaction {
                     t.batchInsert(objs) {
@@ -160,7 +168,7 @@ public class JetbrainsExposedRepositoryGenerator(
                 }
             }
             
-            public override suspend fun update(obj: $clsName): $clsName? {
+            public override suspend fun update(obj: ${clsName}Mod): $clsName? {
                 return this.transaction {
                     table.updateReturning(where = { table.id eq obj.id.value }) { 
                         ${updateFields.joinToString("\n" + " ".repeat(4 * 6))}
@@ -189,7 +197,6 @@ public class JetbrainsExposedRepositoryGenerator(
                         .singleOrNull()?.let(::toDomain)
                 }
             }
-
         }
         """.trimIndent()
 
@@ -214,7 +221,7 @@ public class JetbrainsExposedRepositoryGenerator(
     private fun generateUpdateFields(clsData: AClassData): Iterable<String> {
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
-            if (data.aProp.name != "id") {
+            if (data.aProp.name != "id" && data.aProp.annotations.contains(name<Mod>())) {
                 val mappedData = mapping.first { data.aProp.type == it.first }.second.third(data)
                 fields.add("it[${data.aProp.name}] = obj.${data.aProp.name}${mappedData}")
             }
@@ -225,8 +232,10 @@ public class JetbrainsExposedRepositoryGenerator(
     private fun generateInsertFields(clsData: AClassData): Iterable<String> {
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
-            val mappedData = mapping.first { data.aProp.type == it.first }.second.third(data)
-            fields.add("it[${data.aProp.name}] = obj.${data.aProp.name}${mappedData}")
+            if (data.aProp.annotations.contains(name<New>())) {
+                val mappedData = mapping.first { data.aProp.type == it.first }.second.third(data)
+                fields.add("it[${data.aProp.name}] = obj.${data.aProp.name}${mappedData}")
+            }
         }
         return fields
     }
@@ -234,8 +243,10 @@ public class JetbrainsExposedRepositoryGenerator(
     private fun generateBatchInsertFields(clsData: AClassData): Iterable<String> {
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
-            val mappedData = mapping.first { data.aProp.type == it.first }.second.third(data)
-            fields.add("this[t.${data.aProp.name}] = it.${data.aProp.name}${mappedData}")
+            if (data.aProp.annotations.contains(name<New>())) {
+                val mappedData = mapping.first { data.aProp.type == it.first }.second.third(data)
+                fields.add("this[t.${data.aProp.name}] = it.${data.aProp.name}${mappedData}")
+            }
         }
         return fields
     }

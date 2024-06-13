@@ -1,4 +1,4 @@
-package com.urosjarc.architect.lib.impl
+package com.urosjarc.architect.lib.generators
 
 import Architect
 import java.io.File
@@ -15,6 +15,7 @@ class Test_JetbrainsExposedRepositoryGenerator {
             interfaceFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/interfaces"),
             sqlFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/sql"),
             repoFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/repos"),
+            modelFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/models"),
             mapping = listOf(
                 "com.urosjarc.architect.lib.test_application.domain.Id" to Triple(
                     { "reference(\"${it.aProp.name}\", ${it.aTypeParams[0].name}Sql.table)" },
