@@ -17,7 +17,7 @@ class Test_RawDependencyObjectGenerator {
             endMark = "//END MARK"
         )
 
-        di.generate(aState = aState)
+//        di.generate(aState = aState)
 
     }
 

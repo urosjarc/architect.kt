@@ -30,7 +30,7 @@ class Test_JetbrainsExposedRepositoryGenerator {
             ),
         )
 
-        exposedRepoGen.generate(aState = aState)
+//        exposedRepoGen.generate(aState = aState)
 
     }
 

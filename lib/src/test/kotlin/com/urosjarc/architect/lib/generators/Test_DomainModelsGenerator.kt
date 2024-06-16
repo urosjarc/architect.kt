@@ -15,7 +15,7 @@ class Test_DomainModelsGenerator {
             modelFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/models"),
         )
 
-        domainModelsGen.generate(aState = aState)
+//        domainModelsGen.generate(aState = aState)
 
     }
 

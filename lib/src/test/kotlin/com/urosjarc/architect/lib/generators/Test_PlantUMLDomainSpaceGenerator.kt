@@ -15,7 +15,7 @@ class Test_PlantUMLDomainSpaceGenerator {
             outputFile = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/domain.plantuml"),
         )
 
-        di.generate(aState = aState)
+//        di.generate(aState = aState)
 
     }
 

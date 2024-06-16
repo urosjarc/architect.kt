@@ -7,6 +7,7 @@ import com.urosjarc.architect.lib.data.AClassData
 import com.urosjarc.architect.lib.data.APropData
 import com.urosjarc.architect.lib.domain.AState
 import com.urosjarc.architect.lib.extend.name
+import org.apache.logging.log4j.kotlin.logger
 import java.io.File
 
 public class DomainModelsGenerator(
@@ -16,6 +17,7 @@ public class DomainModelsGenerator(
     private val modelPackage = this.modelFolder.absolutePath.split("/kotlin/").last().replace("/", ".")
     override fun generate(aState: AState) {
         aState.domainEntities.forEach { it: AClassData ->
+            logger.info(it)
             this.generateModel(clsData = it)
         }
     }

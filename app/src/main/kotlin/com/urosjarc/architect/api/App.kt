@@ -1,11 +1,8 @@
 package com.urosjarc.architect.api
 
 import com.urosjarc.architect.api.repos.sql.UserSqlRepo
-import com.urosjarc.architect.api.services.ClassGraphService
 import com.urosjarc.architect.core.repos.UserRepo
-import com.urosjarc.architect.core.services.ClassService
 import com.urosjarc.architect.core.services.JsonService
-import com.urosjarc.architect.core.use_cases.Scan_project_arhitecture
 import com.urosjarc.architect.core.use_cases.Seed_repos
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -19,10 +16,8 @@ public object App {
 
     // SERVICES
     public lateinit var jsonService: JsonService
-    public lateinit var classService: ClassService
 
     // USE CASES
-    public lateinit var scan_project_arhitecture: Scan_project_arhitecture
     public lateinit var seed_repos: Seed_repos
 
     public fun init(seed: Boolean = true) {
@@ -32,10 +27,8 @@ public object App {
 
         /** SERVICES */
         jsonService = JsonService(prettyPrint = true)
-        classService = ClassGraphService()
 
         /** USE CAESES */
-        scan_project_arhitecture = Scan_project_arhitecture(classService = this.classService)
         seed_repos = Seed_repos(userRepo = this.userRepo)
 
         check()

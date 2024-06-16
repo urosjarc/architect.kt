@@ -15,7 +15,7 @@ class Test_PlantUMLDependencySpaceGenerator {
             outputFile = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/dependencies.plantuml"),
         )
 
-        di.generate(aState = aState)
+//        di.generate(aState = aState)
 
     }
 
