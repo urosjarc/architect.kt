@@ -5,3 +5,4 @@ rootProject.name = "architect"
 include("annotations")
 include("lib")
 include("test")
+include("plugin")

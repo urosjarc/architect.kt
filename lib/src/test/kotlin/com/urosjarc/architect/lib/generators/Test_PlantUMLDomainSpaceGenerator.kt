@@ -1,6 +1,6 @@
 package com.urosjarc.architect.lib.generators
 
-import Architect
+import com.urosjarc.architect.lib.Architect
 import java.io.File
 import kotlin.test.Test
 

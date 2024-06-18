@@ -1,11 +1,23 @@
 plugins {
-    `kotlin-dsl`
+    `java-gradle-plugin`
+    id("buildSrc.common")
 }
 repositories {
     gradlePluginPortal()
+    mavenCentral()
+}
+
+gradlePlugin {
+    plugins {
+        create("architectPlugin") {
+            id = "com.urosjarc.architect"
+            implementationClass = "com.urosjarc.architect.ArchitectPlugin"
+        }
+    }
 }
 
 dependencies {
+    implementation(project(":lib"))
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.23")
     implementation("org.jetbrains.kotlin:kotlin-serialization:1.7.10")
     implementation("org.jetbrains.kotlinx:kover:0.6.1")

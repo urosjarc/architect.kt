@@ -1,6 +1,6 @@
 package com.urosjarc.architect.lib.generators
 
-import Architect
+import com.urosjarc.architect.lib.Architect
 import com.urosjarc.architect.lib.Generator
 import com.urosjarc.architect.lib.data.AClassDataNode
 import com.urosjarc.architect.lib.data.FolderNode

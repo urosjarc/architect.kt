@@ -1,3 +1,5 @@
+package com.urosjarc.architect.lib
+
 import com.urosjarc.architect.annotations.*
 import com.urosjarc.architect.lib.data.*
 import com.urosjarc.architect.lib.domain.*
