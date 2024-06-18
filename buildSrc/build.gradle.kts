@@ -1,10 +1,19 @@
 plugins {
     `kotlin-dsl`
+    `java-gradle-plugin`
 }
 repositories {
     gradlePluginPortal()
 }
 
+gradlePlugin {
+    plugins {
+        create("architectPlugin") {
+            id = "com.urosjarc.architect"
+            implementationClass = "com.urosjarc.architect.ArchitectPlugin"
+        }
+    }
+}
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.23")

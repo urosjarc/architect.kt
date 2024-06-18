@@ -4,7 +4,4 @@ plugins {
 rootProject.name = "architect"
 include("annotations")
 include("lib")
-include("core")
-include("app")
-include("api")
 include("test")
