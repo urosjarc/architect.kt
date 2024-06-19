@@ -2,9 +2,7 @@
 plugins {
     kotlin("jvm") version ("1.9.23")
     kotlin("plugin.serialization") version ("1.7.10")
-}
-kotlin {
-    explicitApi()
+    id("com.urosjarc.architect") version ("0.0.0")
 }
 
 repositories {
@@ -13,13 +11,8 @@ repositories {
 
 dependencies {
     implementation("com.urosjarc:architect-annotations:0.0.0")
-    implementation(kotlin("reflect"))
-    implementation("io.github.classgraph:classgraph:4.8.172")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
-    implementation("org.apache.logging.log4j:log4j-api-kotlin:1.4.0")
-    implementation("org.apache.logging.log4j:log4j-slf4j2-impl:2.20.0")
-
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 }
 

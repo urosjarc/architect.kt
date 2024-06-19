@@ -2,6 +2,11 @@ plugins {
     kotlin("jvm") version("1.9.23")
     `java-gradle-plugin`
 }
+
+kotlin {
+    explicitApi()
+}
+
 repositories {
     gradlePluginPortal()
     mavenCentral()
@@ -17,7 +22,7 @@ gradlePlugin {
 }
 
 dependencies {
-    implementation("com.urosjarc:architect-lib")
+    implementation("com.urosjarc:architect-lib:0.0.0")
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.23")
     implementation("org.jetbrains.kotlin:kotlin-serialization:1.7.10")
     implementation("org.jetbrains.kotlinx:kover:0.6.1")

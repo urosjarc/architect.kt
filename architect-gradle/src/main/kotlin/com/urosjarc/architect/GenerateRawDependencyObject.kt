@@ -1,12 +1,11 @@
 package com.urosjarc.architect
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-open class GenerateRawDependencyObject : DefaultTask() {
+public open class GenerateRawDependencyObject : ArchitectTask(description = "Generate raw dependency code for App object.") {
 
     @TaskAction
-    fun doLast() {
+    public fun doLast() {
         println(this::class.java.simpleName)
     }
 

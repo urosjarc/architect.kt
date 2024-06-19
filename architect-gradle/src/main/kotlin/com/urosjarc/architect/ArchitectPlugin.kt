@@ -3,10 +3,9 @@ package com.urosjarc.architect
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-class ArchitectPlugin : Plugin<Project> {
+public class ArchitectPlugin : Plugin<Project> {
 
-    val className = ArchitectPlugin::class.simpleName.toString()
-    val groupName = "architect"
+    internal val className: String = ArchitectPlugin::class.simpleName.toString()
 
     override fun apply(project: Project) {
         project.tasks.register("generate domain models", GenerateDomainModelsTasks::class.java)

@@ -1,11 +1,11 @@
 package com.urosjarc.architect
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-open class GeneratePlantUmlDomainSpace : DefaultTask() {
+public open class GeneratePlantUmlDomainSpace : ArchitectTask(description = "Generate PlantUML class graph for domain space.") {
+
     @TaskAction
-    fun doLast(){
+    public fun doLast() {
         println(this::class.java.simpleName)
     }
 }
