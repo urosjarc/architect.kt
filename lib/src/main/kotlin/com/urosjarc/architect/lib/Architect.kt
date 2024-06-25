@@ -13,12 +13,11 @@ import kotlin.reflect.full.memberFunctions
 
 public object Architect {
 
-    public fun getState(vararg classPath: String): AState {
-        logger.info("Class path: '${classPath.joinToString()}'")
+    public fun getState(vararg packages: String): AState {
+        logger.info("Packages: '${packages.joinToString()}'")
 
         val scanResult = ClassGraph()
-//            .overrideClasspath(*classPath)
-            .acceptPackages("com.urosjarc.architect")
+            .acceptPackages(*packages)
             .enableAllInfo()
             .verbose()
             .scan()

@@ -3,6 +3,11 @@ plugins {
     id("buildSrc.datetime")
     id("buildSrc.serialization")
     id("buildSrc.logging")
+    id("com.github.johnrengelman.shadow")
+}
+
+kotlin {
+    explicitApi()
 }
 
 dependencies {
