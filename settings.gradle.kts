@@ -1,5 +1,3 @@
 rootProject.name = "architect"
-includeBuild("architect-annotations")
-includeBuild("architect-gradle")
-includeBuild("architect-lib")
-includeBuild("architect-tests")
+include("annotations")
+include("lib")
