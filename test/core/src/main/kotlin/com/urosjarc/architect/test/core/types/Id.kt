@@ -1,4 +1,4 @@
-package com.urosjarc.architect.test.types
+package com.urosjarc.architect.test.core.types
 
 import com.urosjarc.architect.annotations.Identifier
 import kotlinx.serialization.Contextual
