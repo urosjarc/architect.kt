@@ -9,9 +9,9 @@ import kotlinx.serialization.Serializable
 public data class ATypeParam(
     val propId: Id<AProp>,
     val name: String,
-    val path: String,
+    val packagePath: String,
 
     val id: Id<ATypeParam> = Id(),
 ) {
-    val packagePath: String get() = "$path.$name"
+    val import: String get() = "$packagePath.$name"
 }

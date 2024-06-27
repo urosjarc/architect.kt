@@ -1,7 +1,8 @@
 package com.urosjarc.architect.lib.generators
 
+import com.urosjarc.architect.lib.Architect
 import com.urosjarc.architect.lib.Generator
-import com.urosjarc.architect.lib.domain.AState
+import com.urosjarc.architect.lib.data.AStateData
 import com.urosjarc.architect.lib.domain.AVisibility
 import com.urosjarc.architect.lib.extend.afterLastDot
 import java.io.File
@@ -10,25 +11,30 @@ public class PlantUMLDependencySpaceGenerator(
     private val outputFile: File
 ) : Generator {
 
-    override fun generate(aState: AState) {
+    override fun generate(aStateData: AStateData) {
+        val rootFolder = Architect.getFolderNodes(aStateData = aStateData)
+
         val lines = mutableListOf("@startuml", "skinparam backgroundColor darkgray", "skinparam ClassBackgroundColor lightgray")
         val connections = mutableListOf<String>()
 
-        val pacPath_to_domainEntity = aState.domainEntities.associateBy { it.aClass.packagePath }
+        val queue = mutableListOf(rootFolder)
+        while (queue.isNotEmpty()) {
+            val folderNode = queue.removeFirst()
 
-        aState.domainEntities.forEach { e ->
-            lines.add("class ${e.aClass.name} {")
-            e.aProps.forEach { p ->
-                lines.add("\t${getVisibility(p.aProp.visibility)}${p.aProp.name}: ${p.aProp.type.afterLastDot}")
-                p.aTypeParams.forEach { tp ->
-                    val con = pacPath_to_domainEntity[tp.packagePath]
-                    if (con != null && p.aProp.name != "id") {
-                        connections.add("${e.aClass.name} --> ${con.aClass.name}: ${p.aProp.name}")
-                    }
+            folderNode.aClassDatas.forEach { e ->
+                lines.add("class ${e.aClass.name} {")
+                e.aProps.forEach { p ->
+                    lines.add("\t${getVisibility(p.aProp.visibility)}${p.aProp.name}: ${p.aProp.type.afterLastDot}")
+                    connections.add("${e.aClass.name} --> ${p.aProp.type.afterLastDot}")
                 }
+                lines.add("}")
             }
-            lines.add("}")
+
+            folderNode.children.forEach { child ->
+                queue.add(child)
+            }
         }
+
         connections.add("@enduml")
 
         val text = (lines + connections).joinToString("\n")

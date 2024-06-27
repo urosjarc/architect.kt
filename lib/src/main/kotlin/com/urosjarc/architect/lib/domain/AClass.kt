@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class AClass(
     val name: String,
-    val path: String,
+    val packagePath: String,
     val module: String?,
 
     val isAbstract: Boolean,
@@ -25,5 +25,5 @@ public data class AClass(
 
     val id: Id<AClass> = Id(),
 ) {
-    val packagePath: String get() = "$path.$name"
+    val import: String get() = "$packagePath.$name"
 }

@@ -3,8 +3,8 @@ package com.urosjarc.architect.lib.generators
 import com.urosjarc.architect.lib.Architect
 import com.urosjarc.architect.lib.Generator
 import com.urosjarc.architect.lib.data.AClassDataNode
+import com.urosjarc.architect.lib.data.AStateData
 import com.urosjarc.architect.lib.data.FolderNode
-import com.urosjarc.architect.lib.domain.AState
 import java.io.File
 import java.util.*
 
@@ -15,12 +15,12 @@ public class RawDependencyObjectGenerator(
 ) : Generator {
 
 
-    override fun generate(aState: AState) {
-        val rootFolder = Architect.getFolderNodes(aState = aState)
-        val injection = this.injection(aState = aState)
+    override fun generate(aStateData: AStateData) {
+        val rootFolder = Architect.getFolderNodes(aStateData = aStateData)
+        val injection = this.injection(aStateData = aStateData)
         val lines = mutableListOf<String>()
         val check = mutableListOf<String>()
-        this.recursion(node = rootFolder, lines = lines, check = check)
+        this.fillLinesAndCheck(node = rootFolder, lines = lines, check = check)
 
         val newLines = mutableListOf<String>()
         var ignore = false
@@ -47,21 +47,21 @@ public class RawDependencyObjectGenerator(
         appFile.writeText(newLines.joinToString("\n"))
     }
 
-    private fun recursion(node: FolderNode, lines: MutableList<String>, check: MutableList<String>) {
+    private fun fillLinesAndCheck(node: FolderNode, lines: MutableList<String>, check: MutableList<String>) {
         if (node.folder != null) lines.add("    ".repeat(node.level) + "public object ${node.folder!!.capitalize()} {")
         node.aClassDatas.forEach {
             val variable = it.aClass.name.replaceFirstChar { it.lowercase(Locale.getDefault()) }
             lines.add("    ".repeat(node.level + 1) + "lateinit var ${variable}: ${it.aClass.name}")
             check.add("    ".repeat(2) + "logger.info(${variable})")
         }
-        node.children.forEach { this.recursion(node = it, lines = lines, check = check) }
+        node.children.forEach { this.fillLinesAndCheck(node = it, lines = lines, check = check) }
         if (node.folder != null) lines.add("    ".repeat(node.level) + "}")
     }
 
-    public fun injection(aState: AState): MutableList<String> {
+    public fun injection(aStateData: AStateData): MutableList<String> {
         val lines = mutableListOf<String>()
 
-        Architect.getOrderedDependencies(aState = aState).forEach { aClassDataNode ->
+        Architect.getOrderedDependencies(aStateData = aStateData).forEach { aClassDataNode ->
             val kclass = aClassDataNode.aClassData.aClass.name
             val varle = kclass.replaceFirstChar { it.lowercase(Locale.getDefault()) }
             lines.add("    ".repeat(2) + "$varle = $kclass(")

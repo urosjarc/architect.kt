@@ -7,6 +7,6 @@ public data class AClassDataNode(
     var active: Boolean = true
 ) {
     override fun toString(): String {
-        return aClassData.aClass.packagePath
+        return aClassData.aClass.import
     }
 }

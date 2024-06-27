@@ -5,7 +5,7 @@ import com.urosjarc.architect.annotations.New
 import com.urosjarc.architect.lib.Generator
 import com.urosjarc.architect.lib.data.AClassData
 import com.urosjarc.architect.lib.data.APropData
-import com.urosjarc.architect.lib.domain.AState
+import com.urosjarc.architect.lib.data.AStateData
 import com.urosjarc.architect.lib.extend.name
 import org.apache.logging.log4j.kotlin.logger
 import java.io.File
@@ -15,8 +15,8 @@ public class DomainModelsGenerator(
 ) : Generator {
 
     private val modelPackage = this.modelFolder.absolutePath.split("/kotlin/").last().replace("/", ".")
-    override fun generate(aState: AState) {
-        aState.domainEntities.forEach { it: AClassData ->
+    override fun generate(aStateData: AStateData) {
+        aStateData.domainEntities.forEach { it: AClassData ->
             logger.info(it)
             this.generateModel(clsData = it)
         }
@@ -38,12 +38,12 @@ public class DomainModelsGenerator(
             if (data.aProp.annotations.contains(name<New>())) {
                 newFields.add("val ${data.aProp.name}: $type,")
                 newImportsFields.add(data.aProp.type)
-                newImportsFields.addAll(data.aTypeParams.map { it.packagePath })
+                newImportsFields.addAll(data.aTypeParams.map { it.import })
             }
             if (data.aProp.annotations.contains(name<Mod>())) {
                 modFields.add("val ${data.aProp.name}: $type,")
                 modImportsFields.add(data.aProp.type)
-                modImportsFields.addAll(data.aTypeParams.map { it.packagePath })
+                modImportsFields.addAll(data.aTypeParams.map { it.import })
             }
         }
 
@@ -64,7 +64,7 @@ public class DomainModelsGenerator(
         package $modelPackage
         
         import kotlinx.serialization.Serializable 
-        ${newImportsFields.map { "import $it\n" + " ".repeat(2 * 4) }.joinToString("")}
+        ${newImportsFields.joinToString("") { "import $it\n" + " ".repeat(2 * 4) }}
         
         @Serializable
         public data class ${clsName}New(
@@ -72,8 +72,13 @@ public class DomainModelsGenerator(
         )
         """.trimIndent()
 
-        if (newFields.isNotEmpty()) File(modelFolder, "${clsName}New.kt").writeText(newText)
-        if (modFields.isNotEmpty()) File(modelFolder, "${clsName}Mod.kt").writeText(modText)
+        println(modFields.size)
+        check(modFields.isNotEmpty()) { "@Mod fields are not found in: $clsName" }
+        println(newFields.size)
+        check(newFields.isNotEmpty()) { "@New fields are not found in: $clsName" }
+
+        File(modelFolder, "${clsName}New.kt").writeText(newText)
+        File(modelFolder, "${clsName}Mod.kt").writeText(modText)
     }
 
 }

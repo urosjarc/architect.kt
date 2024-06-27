@@ -36,28 +36,28 @@ task("generate") {
         mkdir(modelFolder)
         mkdir(sqlFolder)
         mkdir(repoFolder)
-        println("=================")
 
-        val aState = Architect.getState("com.urosjarc.architect.test.core")
-        PlantUMLDomainSpaceGenerator(outputFile = domainSpaceFile).generate(aState = aState)
-        PlantUMLDependencySpaceGenerator(outputFile = dependencySpaceFile).generate(aState = aState)
+        val aStateData = Architect.getStateData("com.urosjarc.architect.test.core")
+        PlantUMLDomainSpaceGenerator(outputFile = domainSpaceFile).generate(aStateData = aStateData)
+        PlantUMLDependencySpaceGenerator(outputFile = dependencySpaceFile).generate(aStateData = aStateData)
+        DomainModelsGenerator(modelFolder=modelFolder).generate(aStateData = aStateData)
         JetbrainsExposedRepositoryGenerator(
             interfaceFolder = interfaceFolder,
             sqlFolder = sqlFolder,
             repoFolder = repoFolder,
             modelFolder = modelFolder,
             mapping = listOf(
-                "com.urosjarc.architect.test.types.Id" to Triple(
+                "com.urosjarc.architect.test.core.types.Id" to Triple(
                     { "reference(\"${it.aProp.name}\", ${it.aTypeParams[0].name}Sql.table)" },
                     { "Id(row[table.${it.aProp.name}].value)" },
                     { ".value" },
                 ),
-                "com.urosjarc.architect.test.domain.User.Type" to Triple(
+                "com.urosjarc.architect.test.core.domain.User.Type" to Triple(
                     { "varchar(\"${it.aProp.name}\", 200)" },
                     { "User.Type.valueOf(row[table.${it.aProp.name}])" },
                     { ".name" },
                 )
             ),
-        ).generate(aState = aState)
+        ).generate(aStateData = aStateData)
     }
 }

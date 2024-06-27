@@ -9,7 +9,7 @@ class Test_JetbrainsExposedRepositoryGenerator {
 
     @Test
     fun `test generate`() {
-        val aState = Architect.getState("com.urosjarc.architect.lib.test_application")
+        val aState = Architect.getStateData("com.urosjarc.architect.lib.test_application")
 
         val exposedRepoGen = JetbrainsExposedRepositoryGenerator(
             interfaceFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/interfaces"),

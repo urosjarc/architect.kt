@@ -13,7 +13,7 @@ import kotlin.reflect.full.memberFunctions
 
 public object Architect {
 
-    public fun getState(vararg packages: String): AState {
+    public fun getStateData(vararg packages: String): AStateData {
         logger.info("Packages: '${packages.joinToString()}'")
 
         val scanResult = ClassGraph()
@@ -22,7 +22,8 @@ public object Architect {
             .verbose()
             .scan()
 
-        return AState(
+        return AStateData(
+            state = AState(),
             identifiers = this.getAnotationEntities(scanResult, Identifier::class.java),
             domainEntities = this.getAnotationEntities(scanResult, DomainEntity::class.java),
             repos = this.getAnotationEntities(scanResult, Repository::class.java),
@@ -31,27 +32,29 @@ public object Architect {
         )
     }
 
-    public fun getClassesFolders(aClassDatas: List<AClassData>, base: List<String>): MutableMap<AClassData, MutableList<String>> {
+    private fun getClassesFolders(aClassDatas: List<AClassData>, base: List<String>): MutableMap<AClassData, MutableList<String>> {
+        if (aClassDatas.isEmpty()) return mutableMapOf()
+
         /** CALCULATE BASE FOLDERS */
-        val packagePaths = aClassDatas.map { it.aClass.path.split(".").toSet() }
+        val packagePaths = aClassDatas.map { it.aClass.packagePath.split(".").toSet() }
         var basePath = packagePaths.first()
         packagePaths.forEach { basePath = basePath.intersect(it) }
 
         /** CALCULATE DISTINCT FOLDERS */
         val classFolders = mutableMapOf<AClassData, MutableList<String>>()
-        aClassDatas.forEach { classFolders[it] = (base + (it.aClass.path.split(".").toSet() - basePath)).toMutableList() }
+        aClassDatas.forEach { classFolders[it] = (base + (it.aClass.packagePath.split(".").toSet() - basePath)).toMutableList() }
         return classFolders
     }
 
-    public fun getOrderedDependencies(aState: AState): List<AClassDataNode> {
+    public fun getOrderedDependencies(aStateData: AStateData): List<AClassDataNode> {
         /** GET OBJECT FOLDERS INTO WHICH DEPENDENCIES CAN BE PUTED */
-        val classFolders = this.getClassesFolders(aState.repos, listOf("repos")) +
-                this.getClassesFolders(aState.services, listOf("services")) +
-                this.getClassesFolders(aState.useCases, listOf("usecases"))
+        val classFolders = this.getClassesFolders(aStateData.repos, listOf("repos")) +
+                this.getClassesFolders(aStateData.services, listOf("services")) +
+                this.getClassesFolders(aStateData.useCases, listOf("usecases"))
 
         /** GET ALL CLASS NODES */
-        val allDependencies = (aState.repos + aState.services + aState.useCases)
-            .map { it.aClass.packagePath to AClassDataNode(it, folders = classFolders[it]!!) }.toMap()
+        val allDependencies = (aStateData.repos + aStateData.services + aStateData.useCases)
+            .map { it.aClass.import to AClassDataNode(it, folders = classFolders[it]!!) }.toMap()
 
         /** CREATE CLASS GRAPH */
         allDependencies.forEach { packagePath, useCase: AClassDataNode ->
@@ -98,7 +101,7 @@ public object Architect {
 
             val aClass = AClass(
                 name = kclass.simpleName!!,
-                path = sr.packageName,
+                packagePath = sr.packageName,
                 module = sr.moduleInfo?.name,
                 isAbstract = kclass.isAbstract,
                 isCompanion = kclass.isCompanion,
@@ -154,7 +157,7 @@ public object Architect {
                             ATypeParam(
                                 propId = aProp.id,
                                 name = clsName,
-                                path = it.removeSuffix(".$clsName")
+                                packagePath = it.removeSuffix(".$clsName")
                             )
                         }
                     )
@@ -199,8 +202,8 @@ public object Architect {
         return aEntities
     }
 
-    public fun getFolderNodes(aState: AState): FolderNode {
-        val orderedDependencies = this.getOrderedDependencies(aState = aState)
+    public fun getFolderNodes(aStateData: AStateData): FolderNode {
+        val orderedDependencies = this.getOrderedDependencies(aStateData = aStateData)
         val rootFolder = FolderNode(level = 0)
 
         orderedDependencies.forEach { it: AClassDataNode ->

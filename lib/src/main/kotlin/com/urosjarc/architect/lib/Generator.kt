@@ -1,7 +1,7 @@
 package com.urosjarc.architect.lib
 
-import com.urosjarc.architect.lib.domain.AState
+import com.urosjarc.architect.lib.data.AStateData
 
 public interface Generator {
-    public fun generate(aState: AState)
+    public fun generate(aStateData: AStateData)
 }

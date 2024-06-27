@@ -10,12 +10,6 @@ import kotlinx.serialization.Serializable
 @DomainEntity
 @Serializable
 public data class AState(
-    public val identifiers: List<AClassData>,
-    public val domainEntities: List<AClassData>,
-    public val repos: List<AClassData>,
-    public val services: List<AClassData>,
-    public val useCases: List<AClassData>,
-
     public val id: Id<AState> = Id(),
     public val created: Instant = Clock.System.now(),
 )

@@ -5,7 +5,7 @@ plugins {
 dependencies {
     implementation("com.zaxxer:HikariCP:5.1.0")
 
-    val exposedVersion = "0.49.0"
+    val exposedVersion = "0.51.1"
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")

@@ -5,11 +5,12 @@ import com.urosjarc.architect.annotations.New
 import com.urosjarc.architect.lib.Generator
 import com.urosjarc.architect.lib.data.AClassData
 import com.urosjarc.architect.lib.data.APropData
-import com.urosjarc.architect.lib.domain.AState
+import com.urosjarc.architect.lib.data.AStateData
 import com.urosjarc.architect.lib.extend.name
 import java.io.File
 
-public typealias Mapping = List<Pair<String, Triple<(APropData) -> String, (APropData) -> String, (APropData) -> String>>>
+public typealias MappingData = Pair<String, Triple<(APropData) -> String, (APropData) -> String, (APropData) -> String>>
+public typealias Mapping = List<MappingData>
 
 public class JetbrainsExposedRepositoryGenerator(
     private val interfaceFolder: File,
@@ -47,20 +48,20 @@ public class JetbrainsExposedRepositoryGenerator(
         ),
     )
 
-    override fun generate(aState: AState) {
+    override fun generate(aStateData: AStateData) {
 
-        this.generateDomainEntityRepo(clsData = aState.identifiers[0])
-        aState.domainEntities.forEach { it: AClassData ->
+        this.generateDomainEntityRepo(clsData = aStateData.identifiers[0])
+        aStateData.domainEntities.forEach { it: AClassData ->
             this.generateRepo(clsData = it)
             this.generateSql(clsData = it)
             this.generateSqlRepo(clsData = it)
         }
 
-        this.domainModelGen.generate(aState = aState)
+        this.domainModelGen.generate(aStateData = aStateData)
     }
 
     private fun generateRepo(clsData: AClassData) {
-        val pacPath = clsData.aClass.path
+        val pacPath = clsData.aClass.packagePath
         val clsName = clsData.aClass.name
         val repoName = "${clsName}Repo"
 
@@ -79,7 +80,7 @@ public class JetbrainsExposedRepositoryGenerator(
     }
 
     private fun generateSqlRepo(clsData: AClassData) {
-        val pacPath = clsData.aClass.path
+        val pacPath = clsData.aClass.packagePath
         val clsName = clsData.aClass.name
         val repoName = "${clsName}SqlRepo"
 
@@ -97,7 +98,7 @@ public class JetbrainsExposedRepositoryGenerator(
     }
 
     private fun generateDomainEntityRepo(clsData: AClassData) {
-        val pacPath = clsData.aClass.path
+        val pacPath = clsData.aClass.packagePath
         val clsName = clsData.aClass.name
         val baseRepoName = "Repo"
 
@@ -204,7 +205,7 @@ public class JetbrainsExposedRepositoryGenerator(
     }
 
     private fun generateImports(clsData: AClassData): Iterable<String> {
-        val imports = mutableSetOf(clsData.aClass.packagePath)
+        val imports = mutableSetOf(clsData.aClass.import)
         clsData.aProps.forEach { imports.add(it.aProp.type) }
         return imports.map { "import $it" }
     }
@@ -212,17 +213,18 @@ public class JetbrainsExposedRepositoryGenerator(
     private fun generateDomainFields(clsData: AClassData): Iterable<String> {
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
-            val mappedData = mapping.first { data.aProp.type == it.first }.second.second(data)
+            val mappedData = this.getMappingValue(type = data.aProp.type).second.second(data)
             fields.add("${data.aProp.name} = $mappedData,")
         }
         return fields
     }
 
+
     private fun generateUpdateFields(clsData: AClassData): Iterable<String> {
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
             if (data.aProp.name != "id" && data.aProp.annotations.contains(name<Mod>())) {
-                val mappedData = mapping.first { data.aProp.type == it.first }.second.third(data)
+                val mappedData = this.getMappingValue(type = data.aProp.type).second.third(data)
                 fields.add("it[${data.aProp.name}] = obj.${data.aProp.name}${mappedData}")
             }
         }
@@ -233,7 +235,7 @@ public class JetbrainsExposedRepositoryGenerator(
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
             if (data.aProp.annotations.contains(name<New>())) {
-                val mappedData = mapping.first { data.aProp.type == it.first }.second.third(data)
+                val mappedData = this.getMappingValue(type = data.aProp.type).second.third(data)
                 fields.add("it[${data.aProp.name}] = obj.${data.aProp.name}${mappedData}")
             }
         }
@@ -244,7 +246,7 @@ public class JetbrainsExposedRepositoryGenerator(
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
             if (data.aProp.annotations.contains(name<New>())) {
-                val mappedData = mapping.first { data.aProp.type == it.first }.second.third(data)
+                val mappedData = this.getMappingValue(type = data.aProp.type).second.third(data)
                 fields.add("this[t.${data.aProp.name}] = it.${data.aProp.name}${mappedData}")
             }
         }
@@ -255,11 +257,15 @@ public class JetbrainsExposedRepositoryGenerator(
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
             if (data.aProp.name != "id") {
-                val mappedData = mapping.first { data.aProp.type == it.first }.second.first(data)
+                val mappedData = this.getMappingValue(type = data.aProp.type).second.first(data)
                 fields.add("val ${data.aProp.name} = $mappedData")
             }
         }
         return fields
     }
 
+    private fun getMappingValue(type: String): MappingData {
+        return mapping.firstOrNull { type == it.first }
+            ?: throw IllegalStateException("Could not found mapping for type: ${type}")
+    }
 }
