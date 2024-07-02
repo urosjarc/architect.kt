@@ -14,6 +14,7 @@ public data class AProp(
     val annotations: List<String>,
     val visibility: AVisibility,
     val isMutable: Boolean,
+    val isNullable: Boolean,
     val isOptional: Boolean,
     val isAbstract: Boolean,
     val isConst: Boolean,

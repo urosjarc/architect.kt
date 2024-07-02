@@ -1,12 +1,9 @@
 package com.urosjarc.architect.lib.generators
 
-import com.urosjarc.architect.annotations.Mod
-import com.urosjarc.architect.annotations.New
 import com.urosjarc.architect.lib.Generator
 import com.urosjarc.architect.lib.data.AClassData
 import com.urosjarc.architect.lib.data.APropData
 import com.urosjarc.architect.lib.data.AStateData
-import com.urosjarc.architect.lib.extend.name
 import org.apache.logging.log4j.kotlin.logger
 import java.io.File
 
@@ -14,7 +11,7 @@ public class DomainModelsGenerator(
     private val modelFolder: File,
 ) : Generator {
 
-    private val modelPackage = this.modelFolder.absolutePath.split("/kotlin/").last().replace("/", ".")
+    internal val modelPackage = this.modelFolder.absolutePath.split("/kotlin/").last().replace("/", ".")
     override fun generate(aStateData: AStateData) {
         aStateData.domainEntities.forEach { it: AClassData ->
             logger.info(it)
@@ -35,12 +32,12 @@ public class DomainModelsGenerator(
 
             if (data.aProp.inlineType != null) type += "<${typeParams}>"
 
-            if (data.aProp.annotations.contains(name<New>())) {
+            if (!data.aProp.isOptional) {
                 newFields.add("val ${data.aProp.name}: $type,")
                 newImportsFields.add(data.aProp.type)
                 newImportsFields.addAll(data.aTypeParams.map { it.import })
             }
-            if (data.aProp.annotations.contains(name<Mod>())) {
+            if (data.aProp.isMutable || data.aProp.name == "id") {
                 modFields.add("val ${data.aProp.name}: $type,")
                 modImportsFields.add(data.aProp.type)
                 modImportsFields.addAll(data.aTypeParams.map { it.import })
@@ -48,7 +45,7 @@ public class DomainModelsGenerator(
         }
 
 
-        val modText = """
+        var modText = """
         package $modelPackage
         
         import kotlinx.serialization.Serializable 
@@ -60,7 +57,7 @@ public class DomainModelsGenerator(
         )
         """.trimIndent()
 
-        val newText = """
+        var newText = """
         package $modelPackage
         
         import kotlinx.serialization.Serializable 
@@ -72,10 +69,8 @@ public class DomainModelsGenerator(
         )
         """.trimIndent()
 
-        println(modFields.size)
-        check(modFields.isNotEmpty()) { "@Mod fields are not found in: $clsName" }
-        println(newFields.size)
-        check(newFields.isNotEmpty()) { "@New fields are not found in: $clsName" }
+        if (modImportsFields.isEmpty()) modText = modText.replace("data class", "class")
+        if (newImportsFields.isEmpty()) newText = newText.replace("data class", "class")
 
         File(modelFolder, "${clsName}New.kt").writeText(newText)
         File(modelFolder, "${clsName}Mod.kt").writeText(modText)

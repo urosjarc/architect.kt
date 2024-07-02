@@ -56,6 +56,11 @@ task("generate") {
                     { "varchar(\"${it.aProp.name}\", 200)" },
                     { "User.Type.valueOf(row[table.${it.aProp.name}])" },
                     { ".name" },
+                ),
+                "kotlinx.datetime.Instant" to Triple(
+                    { "instant(\"${it.aProp.name}\")" },
+                    { "row[table.${it.aProp.name}]" },
+                    { "" },
                 )
             ),
         ).generate(aStateData = aStateData)

@@ -17,8 +17,7 @@ internal val <T : Any> KProperty1<T, *>.ext_isMutable: Boolean get() = this is K
  *
  * @return true if the property is optional, false otherwise.
  */
-internal val <T : Any> KProperty1<T, *>.ext_isOptional: Boolean get() = this.returnType.isMarkedNullable
-
+internal val <T : Any> KProperty1<T, *>.ext_isNullable: Boolean get() = this.returnType.isMarkedNullable
 
 internal val <T : Any> KProperty1<T, *>.ext_inline: KClass<*>?
     get() {

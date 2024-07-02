@@ -1,12 +1,9 @@
 package com.urosjarc.architect.lib.generators
 
-import com.urosjarc.architect.annotations.Mod
-import com.urosjarc.architect.annotations.New
 import com.urosjarc.architect.lib.Generator
 import com.urosjarc.architect.lib.data.AClassData
 import com.urosjarc.architect.lib.data.APropData
 import com.urosjarc.architect.lib.data.AStateData
-import com.urosjarc.architect.lib.extend.name
 import java.io.File
 
 public typealias MappingData = Pair<String, Triple<(APropData) -> String, (APropData) -> String, (APropData) -> String>>
@@ -69,6 +66,8 @@ public class JetbrainsExposedRepositoryGenerator(
         package $interfacePackage
         
         import $pacPath.$clsName
+        import ${domainModelGen.modelPackage}.${clsName}New
+        import ${domainModelGen.modelPackage}.${clsName}Mod
         import com.urosjarc.architect.annotations.Repository
         
         @Repository
@@ -107,10 +106,11 @@ public class JetbrainsExposedRepositoryGenerator(
         
         import $pacPath.$clsName
         
-        public interface $baseRepoName<T,N,U> {
+        public interface $baseRepoName<T,N,M> {
             public suspend fun insert(obj: N): T?
             public suspend fun insert(objs: Iterable<N>): List<T> 
-            public suspend fun update(obj: U): T?
+            public suspend fun updateMod(obj: M): T?
+            public suspend fun update(obj: T): T?
             public suspend fun delete(id: Id<T>): T?
             public suspend fun select(id: Id<T>): T?
             public suspend fun select(): List<T>
@@ -135,6 +135,8 @@ public class JetbrainsExposedRepositoryGenerator(
         package $sqlPackage
         
         import $interfacePackage.Repo
+        import ${domainModelGen.modelPackage}.${clsName}New
+        import ${domainModelGen.modelPackage}.${clsName}Mod
         import org.jetbrains.exposed.dao.id.UUIDTable
         import org.jetbrains.exposed.sql.*
         import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -169,7 +171,15 @@ public class JetbrainsExposedRepositoryGenerator(
                 }
             }
             
-            public override suspend fun update(obj: ${clsName}Mod): $clsName? {
+            public override suspend fun updateMod(obj: ${clsName}Mod): $clsName? {
+                return this.transaction {
+                    table.updateReturning(where = { table.id eq obj.id.value }) { 
+                        ${updateFields.joinToString("\n" + " ".repeat(4 * 6))}
+                    }.singleOrNull()?.let(::toDomain)
+                }
+            } 
+            
+            public override suspend fun update(obj: ${clsName}): $clsName? {
                 return this.transaction {
                     table.updateReturning(where = { table.id eq obj.id.value }) { 
                         ${updateFields.joinToString("\n" + " ".repeat(4 * 6))}
@@ -223,7 +233,7 @@ public class JetbrainsExposedRepositoryGenerator(
     private fun generateUpdateFields(clsData: AClassData): Iterable<String> {
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
-            if (data.aProp.name != "id" && data.aProp.annotations.contains(name<Mod>())) {
+            if (data.aProp.isMutable || data.aProp.name == "id") {
                 val mappedData = this.getMappingValue(type = data.aProp.type).second.third(data)
                 fields.add("it[${data.aProp.name}] = obj.${data.aProp.name}${mappedData}")
             }
@@ -234,7 +244,7 @@ public class JetbrainsExposedRepositoryGenerator(
     private fun generateInsertFields(clsData: AClassData): Iterable<String> {
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
-            if (data.aProp.annotations.contains(name<New>())) {
+            if (!data.aProp.isOptional) {
                 val mappedData = this.getMappingValue(type = data.aProp.type).second.third(data)
                 fields.add("it[${data.aProp.name}] = obj.${data.aProp.name}${mappedData}")
             }
@@ -245,7 +255,7 @@ public class JetbrainsExposedRepositoryGenerator(
     private fun generateBatchInsertFields(clsData: AClassData): Iterable<String> {
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
-            if (data.aProp.annotations.contains(name<New>())) {
+            if (!data.aProp.isOptional) {
                 val mappedData = this.getMappingValue(type = data.aProp.type).second.third(data)
                 fields.add("this[t.${data.aProp.name}] = it.${data.aProp.name}${mappedData}")
             }

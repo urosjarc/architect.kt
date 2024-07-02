@@ -15,9 +15,6 @@ class Generate_jetbrains_exposed_sql_repos(
     }
 
     fun now(aState: AState) {
-        aState.repos.forEach {
-            println(it)
-        }
     }
 
 }
