@@ -58,7 +58,7 @@ task("generate") {
                     { ".name" },
                 ),
                 "kotlinx.datetime.Instant" to Triple(
-                    { "instant(\"${it.aProp.name}\")" },
+                    { "timestamp(\"${it.aProp.name}\")" },
                     { "row[table.${it.aProp.name}]" },
                     { "" },
                 )

@@ -139,6 +139,7 @@ public class JetbrainsExposedRepositoryGenerator(
         import ${domainModelGen.modelPackage}.${clsName}Mod
         import org.jetbrains.exposed.dao.id.UUIDTable
         import org.jetbrains.exposed.sql.*
+        import org.jetbrains.exposed.sql.kotlin.datetime.*
         import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
         import kotlinx.coroutines.Dispatchers
         ${imports.joinToString("\n" + " ".repeat(4 * 2))}
