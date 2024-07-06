@@ -119,16 +119,18 @@ public object Architect {
                 classId = aClass.id,
                 type = AMethod.Type.CONSTRUCTOR,
                 name = "constructor",
-                returnType = null,
+                returnType = "",
                 visibility = AVisibility.PUBLIC
             )
 
             val aEntity = AClassData(
                 aClass = aClass,
                 aProps = kclass.ext_kprops.map { kprop: KProperty1<out Any, *> ->
+
+                    val kPropReturnType = kprop.returnType.toString()
                     val typeInfos = kprop.returnType.toString().removeSuffix(">").split("<")
                     val type = typeInfos.first()
-                    val typeParams = typeInfos.last().split(",")
+                    val typeParams = if (kPropReturnType.contains("<") && kPropReturnType.contains(">")) typeInfos.last().split(",") else listOf()
 
                     val annotations = kclass.ext_kparams
                         .firstOrNull { it.name == kprop.name }?.annotations
@@ -196,6 +198,10 @@ public object Architect {
                             )
                         }
                     )
+                }.filter { m ->
+                    !m.aMethod.name.contains("[$0-9]".toRegex()) && !listOf(
+                        "constructor", "copy", "equals", "toString", "hashCode"
+                    ).contains(m.aMethod.name)
                 }
             )
             aEntities.add(aEntity)

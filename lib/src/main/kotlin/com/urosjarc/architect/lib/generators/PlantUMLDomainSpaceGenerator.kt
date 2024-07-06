@@ -19,8 +19,11 @@ public class PlantUMLDomainSpaceGenerator(
 
         aStateData.domainEntities.forEach { e ->
             lines.add("class ${e.aClass.name} {")
+
             e.aProps.forEach { p ->
-                lines.add("\t${getVisibility(p.aProp.visibility)}${p.aProp.name}: ${p.aProp.type.afterLastDot}")
+                var type = p.aProp.type.afterLastDot
+                if(p.aTypeParams.isNotEmpty()) type += "<${p.aTypeParams.joinToString { it.name }}>"
+                lines.add("\t${getVisibility(p.aProp.visibility)}${p.aProp.name}: $type")
                 p.aTypeParams.forEach { tp ->
                     val con = pacPath_to_domainEntity[tp.import]
                     if (con != null && p.aProp.name != "id") {
@@ -28,7 +31,23 @@ public class PlantUMLDomainSpaceGenerator(
                     }
                 }
             }
+
+            e.aMethods.filter { m ->
+                !m.aMethod.name.contains("[$0-9]".toRegex()) && !listOf(
+                    "constructor", "copy", "equals", "toString", "hashCode"
+                ).contains(m.aMethod.name)
+            }.forEach { m ->
+                val params = mutableListOf<String>()
+                m.aParams.forEach { p ->
+                    val type = p.type.afterLastDot
+                    params.add("${p.name}: $type")
+                }
+                val type = m.aMethod.returnType.afterLastDot
+                lines.add("\t${getVisibility(m.aMethod.visibility)}${m.aMethod.name}(${params.joinToString()}) : $type")
+            }
+
             lines.add("}")
+
         }
         connections.add("@enduml")
 

@@ -11,4 +11,9 @@ public data class Album(
 
     val artistId: Id<Artist>,
     val name: String,
-)
+) {
+
+    private fun registerArtist(){
+
+    }
+}
