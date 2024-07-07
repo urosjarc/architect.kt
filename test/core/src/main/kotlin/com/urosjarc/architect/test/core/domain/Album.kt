@@ -13,7 +13,14 @@ public data class Album(
     val name: String,
 ) {
 
-    private fun registerArtist(){
+    private fun registerArtist() {
 
     }
+
+    internal fun registerName(name: String) {
+
+    }
+
+    public fun withReturnType(): String = this.name
+    public fun withReturnType(id: Id<Album>, id2: Id<Artist>): Id<Album> = Id()
 }

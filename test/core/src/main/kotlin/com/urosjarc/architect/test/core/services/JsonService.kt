@@ -1,5 +1,6 @@
 package com.urosjarc.architect.test.core.services
 
+import com.urosjarc.architect.annotations.Service
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -8,6 +9,7 @@ import kotlinx.serialization.modules.contextual
 import com.urosjarc.architect.test.core.serializers.BytesSerializer
 import shared.core.serializers.UUIDSerializer
 
+@Service
 public open class JsonService(prettyPrint: Boolean = false) {
 	public val module: Json =
 		Json {

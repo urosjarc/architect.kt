@@ -4,6 +4,7 @@ import com.urosjarc.architect.lib.Generator
 import com.urosjarc.architect.lib.data.AClassData
 import com.urosjarc.architect.lib.data.APropData
 import com.urosjarc.architect.lib.data.AStateData
+import com.urosjarc.architect.lib.extend.afterLastDot
 import org.apache.logging.log4j.kotlin.logger
 import java.io.File
 
@@ -26,9 +27,10 @@ public class DomainModelsGenerator(
         val modFields = mutableListOf<String>()
         val newImportsFields = mutableSetOf<String>()
         val modImportsFields = mutableSetOf<String>()
+
         clsData.aProps.forEach { data: APropData ->
-            var type = data.aProp.type.split(".").last()
-            val typeParams = data.aTypeParams.map { it.name }.joinToString(",")
+            var type = data.aProp.type.afterLastDot
+            val typeParams = data.aTypeParams.joinToString { it.name }
 
             if (data.aProp.inlineType != null) type += "<${typeParams}>"
 
@@ -37,7 +39,7 @@ public class DomainModelsGenerator(
                 newImportsFields.add(data.aProp.type)
                 newImportsFields.addAll(data.aTypeParams.map { it.import })
             }
-            if (data.aProp.isMutable || data.aProp.name == "id") {
+            if (data.aProp.isVar || data.aProp.isIdentifier) {
                 modFields.add("val ${data.aProp.name}: $type,")
                 modImportsFields.add(data.aProp.type)
                 modImportsFields.addAll(data.aTypeParams.map { it.import })

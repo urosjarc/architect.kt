@@ -1,6 +1,7 @@
 package com.urosjarc.architect.test.core.domain
 
 import com.urosjarc.architect.annotations.DomainEntity
+import com.urosjarc.architect.annotations.Var
 import com.urosjarc.architect.test.core.types.Id
 import kotlinx.serialization.Serializable
 
@@ -10,12 +11,12 @@ public data class Customer(
     val id: Id<Customer> = Id(),
     val supportRepId: Id<Employee>,
 
-    var firstName: String = "",
-    var lastName: String = "",
-    var company: String,
-    var address: String,
-    var city: String,
-    var state: String,
+    @Var val firstName: String = "",
+    @Var val lastName: String = "",
+    @Var val company: String,
+    @Var val address: String,
+    @Var val city: String,
+    @Var val state: String,
     val country: String,
     val postalCode: String,
     val phone: String,

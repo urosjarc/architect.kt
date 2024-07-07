@@ -58,14 +58,13 @@ public class JetbrainsExposedRepositoryGenerator(
     }
 
     private fun generateRepo(clsData: AClassData) {
-        val pacPath = clsData.aClass.packagePath
         val clsName = clsData.aClass.name
         val repoName = "${clsName}Repo"
 
         val text = """
         package $interfacePackage
         
-        import $pacPath.$clsName
+        import ${clsData.aClass.import}
         import ${domainModelGen.modelPackage}.${clsName}New
         import ${domainModelGen.modelPackage}.${clsName}Mod
         import com.urosjarc.architect.annotations.Repository
@@ -79,7 +78,6 @@ public class JetbrainsExposedRepositoryGenerator(
     }
 
     private fun generateSqlRepo(clsData: AClassData) {
-        val pacPath = clsData.aClass.packagePath
         val clsName = clsData.aClass.name
         val repoName = "${clsName}SqlRepo"
 
@@ -234,7 +232,7 @@ public class JetbrainsExposedRepositoryGenerator(
     private fun generateUpdateFields(clsData: AClassData): Iterable<String> {
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
-            if (data.aProp.isMutable || data.aProp.name == "id") {
+            if (data.aProp.isMutable || data.aProp.isIdentifier) {
                 val mappedData = this.getMappingValue(type = data.aProp.type).second.third(data)
                 fields.add("it[${data.aProp.name}] = obj.${data.aProp.name}${mappedData}")
             }
@@ -267,7 +265,7 @@ public class JetbrainsExposedRepositoryGenerator(
     private fun generateTableFields(clsData: AClassData): Iterable<String> {
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
-            if (data.aProp.name != "id") {
+            if (!data.aProp.isIdentifier) {
                 val mappedData = this.getMappingValue(type = data.aProp.type).second.first(data)
                 fields.add("val ${data.aProp.name} = $mappedData")
             }
@@ -277,6 +275,6 @@ public class JetbrainsExposedRepositoryGenerator(
 
     private fun getMappingValue(type: String): MappingData {
         return mapping.firstOrNull { type == it.first }
-            ?: throw IllegalStateException("Could not found mapping for type: ${type}")
+            ?: throw IllegalStateException("Could not found mapping for type: $type")
     }
 }

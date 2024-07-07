@@ -4,9 +4,8 @@ import com.urosjarc.architect.lib.types.Id
 import kotlinx.serialization.Serializable
 
 @Serializable
-public data class AMethod(
-    val classId: Id<AClass>,
-    val name: String,
-    val visibility: AVisibility,
-    val id: Id<AMethod> = Id(),
+public data class AReturnType(
+    val type: String,
+    val methodId: Id<AMethod>,
+    val id: Id<AReturnType> = Id()
 )

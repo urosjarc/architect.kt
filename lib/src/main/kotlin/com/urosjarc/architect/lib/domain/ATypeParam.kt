@@ -7,7 +7,9 @@ import kotlinx.serialization.Serializable
 @DomainEntity
 @Serializable
 public data class ATypeParam(
-    val propId: Id<AProp>,
+    val propId: Id<AProp>?,
+    val paramId: Id<AParam>?,
+    val returnTypeId: Id<AReturnType>?,
     val name: String,
     val packagePath: String,
 

@@ -1,11 +1,13 @@
 package com.urosjarc.architect.test.core.services
 
+import com.urosjarc.architect.annotations.Service
 import kotlin.time.Duration
 
 /**
  * Class for issuing / verifying
  * JWT refresh and auth tokens
  */
+@Service
 public interface JwtService {
 
 	public sealed interface VerifyResult {
