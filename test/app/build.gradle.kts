@@ -1,8 +1,5 @@
 import com.urosjarc.architect.lib.Architect
-import com.urosjarc.architect.lib.generators.DomainModelsGenerator
-import com.urosjarc.architect.lib.generators.JetbrainsExposedRepositoryGenerator
-import com.urosjarc.architect.lib.generators.PlantUMLDependencySpaceGenerator
-import com.urosjarc.architect.lib.generators.PlantUMLDomainSpaceGenerator
+import com.urosjarc.architect.lib.generators.*
 
 plugins {
     id("buildSrc.common")
@@ -40,7 +37,12 @@ task("generate") {
         val aStateData = Architect.getStateData("com.urosjarc.architect.test.core")
         PlantUMLDomainSpaceGenerator(outputFile = domainSpaceFile).generate(aStateData = aStateData)
         PlantUMLDependencySpaceGenerator(outputFile = dependencySpaceFile).generate(aStateData = aStateData)
-        DomainModelsGenerator(modelFolder=modelFolder).generate(aStateData = aStateData)
+        DomainModelsGenerator(modelFolder = modelFolder).generate(aStateData = aStateData)
+        RawDependencyObjectGenerator(
+            appFile = project.layout.projectDirectory.file("src/main/kotlin/com/urosjarc/architect/test/app/App.kt").asFile,
+            startMark = "//START",
+            endMark = "//END"
+        ).generate(aStateData = aStateData)
         JetbrainsExposedRepositoryGenerator(
             interfaceFolder = interfaceFolder,
             sqlFolder = sqlFolder,
