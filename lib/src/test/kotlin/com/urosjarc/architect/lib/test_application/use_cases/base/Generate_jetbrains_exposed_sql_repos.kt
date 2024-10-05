@@ -14,7 +14,8 @@ class Generate_jetbrains_exposed_sql_repos(
 
     }
 
-    fun now(aState: AState) {
+    fun now(aState: AState): AState {
+        return aState
     }
 
 }

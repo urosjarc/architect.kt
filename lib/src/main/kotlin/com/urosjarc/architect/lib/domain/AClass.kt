@@ -12,10 +12,8 @@ public data class AClass(
     val module: String?,
 
     val isAbstract: Boolean,
-    val isCompanion: Boolean,
     val isData: Boolean,
     val isFinal: Boolean,
-    val isFun: Boolean,
     val isInner: Boolean,
     val isOpen: Boolean,
     val isSealed: Boolean,

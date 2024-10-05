@@ -25,10 +25,10 @@ public class PlantUMLDomainSpaceGenerator(
                 lines.add("\t${PlantUML.getVisibility(p.aProp.visibility)}${p.aProp.name}: $simpleType")
 
                 p.aTypeParams.forEach { tp ->
-                    val con = pacPath_to_domainEntity[tp.import]
-                    if (con != null && !p.aProp.isIdentifier) {
-                        connections.add("${e.aClass.name} --> ${con.aClass.name}: ${p.aProp.name}")
-                    }
+//                    val con = pacPath_to_domainEntity[tp.import]
+//                    if (con != null && !p.aProp.isIdentifier) {
+//                        connections.add("${e.aClass.name} --> ${con.aClass.name}: ${p.aProp.name}")
+//                    }
                 }
             }
 

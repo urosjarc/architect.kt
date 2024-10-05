@@ -9,8 +9,8 @@ class Seed_repos(
     private val generate_jetbrains_exposed_sql_repos: Generate_jetbrains_exposed_sql_repos
 ) {
 
-    fun now() {
-        TODO()
+    fun now(): String {
+        return "adsf"
     }
 
 }

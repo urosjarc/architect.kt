@@ -10,7 +10,7 @@ public class Usecase1(
     private val invoiceRepo: InvoiceRepo,
     private val usecase0: Usecase0
 ) {
-    public fun now() {
-
+    public fun now(): String {
+        return "asdf"
     }
 }

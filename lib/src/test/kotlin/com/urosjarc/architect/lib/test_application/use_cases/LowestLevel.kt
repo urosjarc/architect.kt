@@ -10,8 +10,8 @@ class LowestLevel(
     private val another_level: Another_level
 ) {
 
-    fun now() {
-        TODO()
+    fun now(): String {
+        return "asdf"
     }
 
 }

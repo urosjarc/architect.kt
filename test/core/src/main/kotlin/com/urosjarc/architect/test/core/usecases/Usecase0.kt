@@ -9,7 +9,7 @@ public class Usecase0(
     private val jsonService: JsonService,
     private val albumRepo: AlbumRepo
 ) {
-    public fun now() {
-
+    public fun now(): String {
+        return "asdf"
     }
 }

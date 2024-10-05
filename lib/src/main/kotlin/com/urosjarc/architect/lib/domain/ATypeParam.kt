@@ -11,9 +11,6 @@ public data class ATypeParam(
     val paramId: Id<AParam>?,
     val returnTypeId: Id<AReturnType>?,
     val name: String,
-    val packagePath: String,
 
     val id: Id<ATypeParam> = Id(),
-) {
-    val import: String get() = "$packagePath.$name"
-}
+)

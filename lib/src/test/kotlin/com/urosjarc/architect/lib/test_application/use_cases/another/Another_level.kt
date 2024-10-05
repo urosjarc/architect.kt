@@ -10,8 +10,8 @@ class Another_level(
     private val seed_repos: Seed_repos
 ) {
 
-    fun now() {
-        TODO()
+    fun now(): String {
+        return "asdf"
     }
 
 }

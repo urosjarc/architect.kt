@@ -15,7 +15,7 @@ public class Usecase2(
     private val playlistTrackRepo: PlaylistTrackRepo,
     private val playlistRepo: PlaylistRepo
 ) {
-    public fun now() {
-
+    public fun now(): String {
+        return "asdf"
     }
 }

@@ -10,7 +10,6 @@ public data class AParam(
     val methodId: Id<AMethod>,
     val name: String,
     val type: String,
-    val kind: String,
     val isOptional: Boolean,
 
     val id: Id<AParam> = Id(),

@@ -11,7 +11,7 @@ public class Usecase4(
     private val invoiceLineRepo: InvoiceLineRepo,
     private val jwtService: JwtService
 ) {
-    public fun now() {
-
+    public fun now(): String {
+        return "asdf"
     }
 }

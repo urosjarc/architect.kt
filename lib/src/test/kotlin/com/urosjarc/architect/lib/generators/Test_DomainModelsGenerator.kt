@@ -12,10 +12,10 @@ class Test_DomainModelsGenerator {
         val aState = Architect.getStateData("com.urosjarc.architect.lib.test_application")
 
         val domainModelsGen = DomainModelsGenerator(
-            modelFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/models"),
+            modelFolder = File("/home/urosjarc/vcs/architect.kt/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/models"),
         )
 
-//        domainModelsGen.generate(aState = aState)
+        domainModelsGen.generate(aStateData = aState)
 
     }
 

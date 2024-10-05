@@ -19,7 +19,8 @@ public class Usecase3(
     private val customerRepo: CustomerRepo,
     private val passwordService: PasswordService
 ) {
-    public fun now() {
+    public fun now(): String {
+        return "asdf"
 
     }
 }

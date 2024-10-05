@@ -1,27 +1,26 @@
 package com.urosjarc.architect.lib
 
+import com.lemonappdev.konsist.api.Konsist
+import com.lemonappdev.konsist.api.declaration.KoClassDeclaration
+import com.lemonappdev.konsist.api.declaration.KoFunctionDeclaration
+import com.lemonappdev.konsist.api.declaration.KoParameterDeclaration
+import com.lemonappdev.konsist.api.declaration.KoPropertyDeclaration
+import com.lemonappdev.konsist.api.declaration.type.KoTypeDeclaration
 import com.urosjarc.architect.annotations.*
 import com.urosjarc.architect.lib.data.*
 import com.urosjarc.architect.lib.domain.*
-import com.urosjarc.architect.lib.extend.*
 import com.urosjarc.architect.lib.types.Id
-import io.github.classgraph.ClassGraph
-import io.github.classgraph.ClassInfo
-import io.github.classgraph.ScanResult
 import org.apache.logging.log4j.kotlin.logger
-import kotlin.reflect.KFunction
-import kotlin.reflect.KProperty1
+import java.io.InvalidClassException
 
 public object Architect {
 
     public fun getStateData(vararg packages: String): AStateData {
         logger.info("Packages: '${packages.joinToString()}'")
 
-        val scanResult = ClassGraph()
-            .acceptPackages(*packages)
-            .enableAllInfo()
-            .verbose()
-            .scan()
+        val scanResult: List<KoClassDeclaration> = Konsist
+            .scopeFromProject()
+            .classes()
 
         val identifiers = this.getAnotationEntities(scanResult, Identifier::class.java)
 
@@ -90,79 +89,83 @@ public object Architect {
         return orderedDependencies
     }
 
+    private fun getVisibility(sr: KoClassDeclaration): AVisibility = if (sr.hasPublicOrDefaultModifier) AVisibility.PUBLIC
+    else if (sr.hasProtectedModifier) AVisibility.PROTECTED
+    else if (sr.hasPrivateModifier) AVisibility.PRIVATE
+    else if (sr.hasInternalModifier) AVisibility.INTERNAL
+    else throw InvalidClassException("Class '${sr}' has undefined visibility!")
+
+    private fun getVisibility(sr: KoFunctionDeclaration): AVisibility = if (sr.hasPublicOrDefaultModifier) AVisibility.PUBLIC
+    else if (sr.hasProtectedModifier) AVisibility.PROTECTED
+    else if (sr.hasPrivateModifier) AVisibility.PRIVATE
+    else if (sr.hasInternalModifier) AVisibility.INTERNAL
+    else throw InvalidClassException("Function '${sr}' has undefined visibility!")
+
+    private fun getTypeParams(returnTypeId: Id<AReturnType>?, paramId: Id<AParam>?, propId: Id<AProp>?, tp: KoTypeDeclaration): List<ATypeParam> =
+        tp.name.removeSuffix(">").split("<").last().split(",").map { typeArgument ->
+            ATypeParam(
+                paramId = paramId,
+                propId = propId,
+                returnTypeId = returnTypeId,
+                name = typeArgument.trim()
+            )
+        }
+
     private fun getAnotationEntities(
-        scanResult: ScanResult,
+        scanResult: List<KoClassDeclaration>,
         annotation: Class<out Annotation>,
         identifiers: List<AClassData> = listOf()
     ): List<AClassData> {
 
         val aEntities = mutableListOf<AClassData>()
-        val scanResults = scanResult.getClassesWithAnnotation(annotation)
+        val scanResults: List<KoClassDeclaration> = scanResult.filter { it.annotations.filter { it.name == annotation.simpleName }.isNotEmpty() }
 
         logger.info("Found ${scanResults.size} @${annotation.simpleName}")
-        scanResults.forEach { logger.info(" * ${it.name}") }
 
-        scanResults.forEach { sr: ClassInfo ->
-
-            //TODO: https://youtrack.jetbrains.com/issue/KT-10440
-            val kclass = Class.forName(sr.name).kotlin
+        scanResults.forEach { sr: KoClassDeclaration ->
+            println(" * ${sr.path}")
 
             val aClass = AClass(
-                name = kclass.ext_name,
-                packagePath = sr.packageName,
-                module = sr.moduleInfo?.name,
-                isAbstract = kclass.isAbstract,
-                isCompanion = kclass.isCompanion,
-                isData = kclass.isData,
-                isFinal = kclass.isFinal,
-                isFun = kclass.isFun,
-                isInner = kclass.isInner,
-                isOpen = kclass.isOpen,
-                isSealed = kclass.isSealed,
-                isValue = kclass.isValue,
-                visibility = AVisibility.valueOf(kclass.visibility!!.name),
+                name = sr.name,
+                packagePath = sr.fullyQualifiedName!!,
+                module = sr.packagee!!.moduleName,
+                isAbstract = sr.hasAbstractModifier,
+                isData = sr.hasDataModifier,
+                isFinal = sr.hasFinalModifier,
+                isInner = sr.hasInnerModifier,
+                isOpen = sr.hasOpenModifier,
+                isSealed = sr.hasSealedModifier,
+                isValue = sr.hasValueModifier,
+                visibility = this.getVisibility(sr=sr),
             )
 
             val aEntity = AClassData(
                 aClass = aClass,
-                aProps = kclass.ext_kprops.map { kprop: KProperty1<out Any, *> ->
+                aProps = sr.properties(includeNested = false).map { kprop: KoPropertyDeclaration ->
                     val aPropId = Id<AProp>()
-                    val type = kprop.returnType.toString().split("<").first()
                     APropData(
                         aProp = AProp(
                             id = aPropId,
                             classId = aClass.id,
                             name = kprop.name,
-                            type = type,
-                            annotations = kclass.ext_kparams
-                                .firstOrNull { it.name == kprop.name }?.annotations
-                                ?.map { it.annotationClass.ext_name } ?: listOf(),
-                            inlineType = kprop.ext_inline?.toString(),
-                            visibility = AVisibility.valueOf(kprop.visibility!!.name),
-                            isMutable = kprop.ext_isMutable,
-                            isNullable = kprop.ext_isNullable,
-                            isOptional = kclass.isData && kclass.ext_kparams.firstOrNull { it.name == kprop.name }?.isOptional ?: false,
-                            isAbstract = kprop.isAbstract,
-                            isConst = kprop.isConst,
-                            isFinal = kprop.isFinal,
-                            isLateinit = kprop.isLateinit,
-                            isOpen = kprop.isOpen,
-                            isSuspend = kprop.isSuspend,
-                            isIdentifier = identifiers.map { it.aClass.import == type && it.aClass.name.lowercase() == kprop.name }.contains(true)
+                            type = kprop.type!!.bareSourceType,
+                            annotations = kprop.annotations.map { it.name },
+                            visibility = this.getVisibility(sr=sr),
+                            isMutable = kprop.hasVarModifier,
+                            isNullable = kprop.type!!.isNullable,
+                            isOptional = kprop.hasValue(),
+                            isAbstract = kprop.hasAbstractModifier,
+                            isConst = kprop.hasConstModifier,
+                            isFinal = kprop.hasFinalModifier,
+                            isLateinit = kprop.hasLateinitModifier,
+                            isOpen = kprop.hasOpenModifier,
+                            isIdentifier = identifiers.map { it.aClass.import == kprop.type!!.name && it.aClass.name.lowercase() == kprop.name }.contains(true)
                         ),
-                        aTypeParams = kprop.returnType.arguments.map { arg ->
-                            ATypeParam(
-                                paramId = null,
-                                propId = aPropId,
-                                returnTypeId = null,
-                                name = arg.toString().afterLastDot,
-                                packagePath = arg.toString().beforeLastDot
-                            )
-                        }
+                        aTypeParams = this.getTypeParams(returnTypeId = null, paramId = null, propId = aPropId, tp = kprop.type!!)
                     )
                 },
                 aConstructor = AConstructor(classId = aClass.id),
-                aMethods = kclass.ext_kfunctions.map { mfun: KFunction<*> ->
+                aMethods = sr.functions().filter { fu -> this.getVisibility(fu) == AVisibility.PUBLIC }.map { mfun: KoFunctionDeclaration ->
                     val methodId = Id<AMethod>()
                     val returnTypeId = Id<AReturnType>()
                     AMethodData(
@@ -170,48 +173,27 @@ public object Architect {
                             id = methodId,
                             classId = aClass.id,
                             name = mfun.name,
-                            visibility = AVisibility.valueOf(mfun.visibility!!.name)
+                            visibility = this.getVisibility(mfun)
                         ),
                         aReturnTypeData = AReturnTypeData(
-                            aTypeParams = mfun.returnType.arguments.map {
-                                val returnType = mfun.returnType.arguments.first().type.toString()
-                                ATypeParam(
-                                    propId = null,
-                                    paramId = null,
-                                    returnTypeId = returnTypeId,
-                                    name = returnType.afterLastDot,
-                                    packagePath = returnType.beforeLastDot
-                                )
-                            },
                             aReturnType = AReturnType(
                                 id = returnTypeId,
-                                type = mfun.returnType.toString(),
+                                type = mfun.returnType!!.bareSourceType,
                                 methodId = methodId
                             ),
+                            aTypeParams = this.getTypeParams(returnTypeId= returnTypeId, paramId = null, propId = null, tp = mfun.returnType!!)
                         ),
-                        aParams = mfun.ext_kparams.map { kparam ->
-                            val type = kparam.type.toString().removePrefix("class ")
-                            val infos = type.removeSuffix(">").split("<")
-                            val typeParams = if (infos.size == 2) infos.last().split(",") else listOf()
+                        aParams = mfun.parameters.map { kparam: KoParameterDeclaration ->
                             val paramId = Id<AParam>()
                             AParamData(
                                 aParam = AParam(
                                     id = paramId,
                                     methodId = methodId,
-                                    name = kparam.name.toString(),
-                                    type = infos.first(),
-                                    kind = kparam.kind.name,
-                                    isOptional = kparam.isOptional,
+                                    name = kparam.name,
+                                    type = kparam.type.bareSourceType,
+                                    isOptional = kparam.hasDefaultValue()
                                 ),
-                                aTypeParams = typeParams.map { tp ->
-                                    ATypeParam(
-                                        propId = null,
-                                        returnTypeId = null,
-                                        paramId = paramId,
-                                        name = tp.afterLastDot,
-                                        packagePath = infos.last().beforeLastDot
-                                    )
-                                },
+                                aTypeParams = this.getTypeParams(returnTypeId=null, propId = null, paramId = paramId, tp = kparam.type)
                             )
                         }
                     )
