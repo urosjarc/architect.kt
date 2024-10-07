@@ -9,13 +9,13 @@ class Test_JetbrainsExposedRepositoryGenerator {
 
     @Test
     fun `test generate`() {
-        val aState = Architect.getStateData("com.urosjarc.architect.lib.test_application")
+        val aState = Architect.getStateData(classPackages = Utils.classPackages, "com.urosjarc.architect.lib.test_application")
 
         val exposedRepoGen = JetbrainsExposedRepositoryGenerator(
-            interfaceFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/interfaces"),
-            sqlFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/sql"),
-            repoFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/repos"),
-            modelFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/models"),
+            interfaceFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect.kt/lib/test_application/output/interfaces"),
+            sqlFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect.kt/lib/test_application/output/sql"),
+            repoFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect.kt/lib/test_application/output/repos"),
+            modelFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect.kt/lib/test_application/output/models"),
             mapping = listOf(
                 "com.urosjarc.architect.lib.test_application.domain.Id" to Triple(
                     { "reference(\"${it.aProp.name}\", ${it.aTypeParams[0].name}Sql.table)" },

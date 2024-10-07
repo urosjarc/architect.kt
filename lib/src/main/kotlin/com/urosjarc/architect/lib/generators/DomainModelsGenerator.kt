@@ -32,17 +32,17 @@ public class DomainModelsGenerator(
             var type = data.aProp.type.afterLastDot
             val typeParams = data.aTypeParams.joinToString { it.name }
 
-//            if (data.aProp.inlineType != null) type += "<${typeParams}>"
+            if (data.aProp.inlineType != null) type += "<${typeParams}>"
 
             if (!data.aProp.isOptional) {
                 newFields.add("val ${data.aProp.name}: $type,")
                 newImportsFields.add(data.aProp.type)
-//                newImportsFields.addAll(data.aTypeParams.map { it.import })
+                newImportsFields.addAll(data.aTypeParams.map { it.import })
             }
             if (data.aProp.isVar || data.aProp.isIdentifier) {
                 modFields.add("val ${data.aProp.name}: $type,")
                 modImportsFields.add(data.aProp.type)
-//                modImportsFields.addAll(data.aTypeParams.map { it.import })
+                modImportsFields.addAll(data.aTypeParams.map { it.import })
             }
         }
 

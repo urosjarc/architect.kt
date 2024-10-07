@@ -1,10 +1,7 @@
 package com.urosjarc.architect.lib
 
 import com.lemonappdev.konsist.api.Konsist
-import com.lemonappdev.konsist.api.declaration.KoClassDeclaration
-import com.lemonappdev.konsist.api.declaration.KoFunctionDeclaration
-import com.lemonappdev.konsist.api.declaration.KoParameterDeclaration
-import com.lemonappdev.konsist.api.declaration.KoPropertyDeclaration
+import com.lemonappdev.konsist.api.declaration.*
 import com.lemonappdev.konsist.api.declaration.type.KoTypeDeclaration
 import com.urosjarc.architect.annotations.*
 import com.urosjarc.architect.lib.data.*
@@ -15,22 +12,43 @@ import java.io.InvalidClassException
 
 public object Architect {
 
-    public fun getStateData(vararg packages: String): AStateData {
+    /**
+     * TODO: I can't get from parameters and their arguments package paths (this is bug from konsist)
+     * for example if you have data class...
+     *
+     * data class Test(
+     *      val test: Id<Employee>
+     * )
+     *
+     * parameter test have type Id from which I can't get package path, and it has type argument Employee for which
+     * I can't also get the package path, thats why I need association table...
+     */
+    private var className_to_package: Map<String, String> = mapOf()
+
+    public fun getStateData(classPackages: Map<String, String>, vararg packages: String): AStateData {
         logger.info("Packages: '${packages.joinToString()}'")
 
-        val scanResult: List<KoClassDeclaration> = Konsist
+
+        val classes: List<KoClassDeclaration> = Konsist
             .scopeFromProject()
             .classes()
 
-        val identifiers = this.getAnotationEntities(scanResult, Identifier::class.java)
+        val interfaces: List<KoInterfaceDeclaration> = Konsist
+            .scopeFromProject()
+            .interfaces()
+
+        /** Reset association table... */
+        this.className_to_package = classPackages + classes.associate { it.name to it.packagee!!.name } + interfaces.associate { it.name to it.packagee!!.name }
+
+        val identifiers = this.getAnotationEntities(classes, Identifier::class.java)
 
         return AStateData(
             state = AState(),
             identifiers = identifiers,
-            domainEntities = this.getAnotationEntities(scanResult, DomainEntity::class.java, identifiers = identifiers),
-            repos = this.getAnotationEntities(scanResult, Repository::class.java),
-            services = this.getAnotationEntities(scanResult, Service::class.java),
-            useCases = this.getAnotationEntities(scanResult, UseCase::class.java)
+            domainEntities = this.getAnotationEntities(classes, DomainEntity::class.java, identifiers = identifiers),
+            repos = this.getAnotationEntities(classes, Repository::class.java),
+            services = this.getAnotationEntities(classes, Service::class.java),
+            useCases = this.getAnotationEntities(classes, UseCase::class.java)
         )
     }
 
@@ -102,12 +120,19 @@ public object Architect {
     else throw InvalidClassException("Function '${sr}' has undefined visibility!")
 
     private fun getTypeParams(returnTypeId: Id<AReturnType>?, paramId: Id<AParam>?, propId: Id<AProp>?, tp: KoTypeDeclaration): List<ATypeParam> =
-        tp.name.removeSuffix(">").split("<").last().split(",").map { typeArgument ->
+        tp.name.removeSuffix(">").split("<").last().split(",").map { it.trim() }.map { typeArgument ->
+
+            println("Searching: ${tp.name}")
+            val packagePath =
+                if (typeArgument.all { it.isUpperCase() } || typeArgument.length == 1) ""
+                else this.className_to_package[typeArgument] ?: throw Exception("Can't find class ${typeArgument}")
+
             ATypeParam(
                 paramId = paramId,
                 propId = propId,
                 returnTypeId = returnTypeId,
-                name = typeArgument.trim()
+                name = typeArgument,
+                packagePath = packagePath
             )
         }
 
@@ -121,6 +146,7 @@ public object Architect {
         val scanResults: List<KoClassDeclaration> = scanResult.filter { it.annotations.filter { it.name == annotation.simpleName }.isNotEmpty() }
 
         logger.info("Found ${scanResults.size} @${annotation.simpleName}")
+
 
         scanResults.forEach { sr: KoClassDeclaration ->
             println(" * ${sr.path}")
@@ -136,7 +162,7 @@ public object Architect {
                 isOpen = sr.hasOpenModifier,
                 isSealed = sr.hasSealedModifier,
                 isValue = sr.hasValueModifier,
-                visibility = this.getVisibility(sr=sr),
+                visibility = this.getVisibility(sr = sr),
             )
 
             val aEntity = AClassData(
@@ -150,7 +176,7 @@ public object Architect {
                             name = kprop.name,
                             type = kprop.type!!.bareSourceType,
                             annotations = kprop.annotations.map { it.name },
-                            visibility = this.getVisibility(sr=sr),
+                            visibility = this.getVisibility(sr = sr),
                             isMutable = kprop.hasVarModifier,
                             isNullable = kprop.type!!.isNullable,
                             isOptional = kprop.hasValue(),
@@ -159,7 +185,10 @@ public object Architect {
                             isFinal = kprop.hasFinalModifier,
                             isLateinit = kprop.hasLateinitModifier,
                             isOpen = kprop.hasOpenModifier,
-                            isIdentifier = identifiers.map { it.aClass.import == kprop.type!!.name && it.aClass.name.lowercase() == kprop.name }.contains(true)
+                            inlineType = if(kprop.type!!.name.contains("<")) "" else null,
+                            isIdentifier = identifiers
+                                .map { it.aClass.import == kprop.type!!.name && it.aClass.name.lowercase() == kprop.name }
+                                .contains(true)
                         ),
                         aTypeParams = this.getTypeParams(returnTypeId = null, paramId = null, propId = aPropId, tp = kprop.type!!)
                     )
@@ -181,7 +210,7 @@ public object Architect {
                                 type = mfun.returnType!!.bareSourceType,
                                 methodId = methodId
                             ),
-                            aTypeParams = this.getTypeParams(returnTypeId= returnTypeId, paramId = null, propId = null, tp = mfun.returnType!!)
+                            aTypeParams = this.getTypeParams(returnTypeId = returnTypeId, paramId = null, propId = null, tp = mfun.returnType!!)
                         ),
                         aParams = mfun.parameters.map { kparam: KoParameterDeclaration ->
                             val paramId = Id<AParam>()
@@ -193,7 +222,7 @@ public object Architect {
                                     type = kparam.type.bareSourceType,
                                     isOptional = kparam.hasDefaultValue()
                                 ),
-                                aTypeParams = this.getTypeParams(returnTypeId=null, propId = null, paramId = paramId, tp = kparam.type)
+                                aTypeParams = this.getTypeParams(returnTypeId = null, propId = null, paramId = paramId, tp = kparam.type)
                             )
                         }
                     )

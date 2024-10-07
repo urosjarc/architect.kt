@@ -9,13 +9,13 @@ class Test_PlantUMLDomainSpaceGenerator {
 
     @Test
     fun `test generate`() {
-        val aState = Architect.getStateData("com.urosjarc.architect.lib.test_application")
+        val aState = Architect.getStateData(classPackages = Utils.classPackages, "com.urosjarc.architect.lib.test_application")
 
         val di = PlantUMLDomainSpaceGenerator(
-            outputFile = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/domain.plantuml"),
+            outputFile = File("/home/urosjarc/vcs/architect.kt/lib/src/test/kotlin/com/urosjarc/architect/lib/test_application/output/domain_space.plantuml"),
         )
 
-//        di.generate(aState = aState)
+        di.generate(aStateData = aState)
 
     }
 
