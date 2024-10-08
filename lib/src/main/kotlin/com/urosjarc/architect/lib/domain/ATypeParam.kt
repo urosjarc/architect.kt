@@ -4,8 +4,8 @@ import com.urosjarc.architect.annotations.DomainEntity
 import com.urosjarc.architect.lib.types.Id
 import kotlinx.serialization.Serializable
 
-@DomainEntity
 @Serializable
+@DomainEntity
 public data class ATypeParam(
     val propId: Id<AProp>?,
     val paramId: Id<AParam>?,

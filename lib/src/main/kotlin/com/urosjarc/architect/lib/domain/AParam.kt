@@ -4,8 +4,8 @@ import com.urosjarc.architect.annotations.DomainEntity
 import com.urosjarc.architect.lib.types.Id
 import kotlinx.serialization.Serializable
 
-@DomainEntity
 @Serializable
+@DomainEntity
 public data class AParam(
     val methodId: Id<AMethod>,
     val name: String,

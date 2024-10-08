@@ -6,11 +6,12 @@ import com.urosjarc.architect.lib.extend.ext_name
 import com.urosjarc.architect.lib.types.Id
 import kotlinx.serialization.Serializable
 
-@DomainEntity
 @Serializable
+@DomainEntity
 public data class AProp(
     val classId: Id<AClass>,
     val name: String,
+    val packagePath: String,
     val type: String,
     val inlineType: String?,
     val annotations: List<String>,
@@ -28,5 +29,6 @@ public data class AProp(
     val id: Id<AProp> = Id(),
 ) {
 
+    val import: String get() = "$packagePath.$type"
     val isVar: Boolean get() = this.annotations.contains(Identifier::class.ext_name)
 }

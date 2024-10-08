@@ -6,6 +6,7 @@ import com.lemonappdev.konsist.api.declaration.type.KoTypeDeclaration
 import com.urosjarc.architect.annotations.*
 import com.urosjarc.architect.lib.data.*
 import com.urosjarc.architect.lib.domain.*
+import com.urosjarc.architect.lib.extend.beforeLastDot
 import com.urosjarc.architect.lib.types.Id
 import org.apache.logging.log4j.kotlin.logger
 import java.io.InvalidClassException
@@ -23,7 +24,7 @@ public object Architect {
      * parameter test have type Id from which I can't get package path, and it has type argument Employee for which
      * I can't also get the package path, thats why I need association table...
      */
-    private var className_to_package: Map<String, String> = mapOf()
+    private var className_to_package: MutableMap<String, String> = mutableMapOf()
 
     public fun getStateData(classPackages: Map<String, String>, vararg packages: String): AStateData {
         logger.info("Packages: '${packages.joinToString()}'")
@@ -38,7 +39,16 @@ public object Architect {
             .interfaces()
 
         /** Reset association table... */
-        this.className_to_package = classPackages + classes.associate { it.name to it.packagee!!.name } + interfaces.associate { it.name to it.packagee!!.name }
+        this.className_to_package = classPackages.toMutableMap()
+        (classes + interfaces).forEach { cls ->
+            val key = cls.name
+            val value = cls.packagee!!.name
+            if (this.className_to_package.contains(key)) {
+                val firstImport = "${this.className_to_package[key]}.${key}"
+                throw Exception("Duplicated class name: ${firstImport}, ${cls.fullyQualifiedName}")
+            }
+            this.className_to_package[key] = value
+        }
 
         val identifiers = this.getAnotationEntities(classes, Identifier::class.java)
 
@@ -119,8 +129,9 @@ public object Architect {
     else if (sr.hasInternalModifier) AVisibility.INTERNAL
     else throw InvalidClassException("Function '${sr}' has undefined visibility!")
 
-    private fun getTypeParams(returnTypeId: Id<AReturnType>?, paramId: Id<AParam>?, propId: Id<AProp>?, tp: KoTypeDeclaration): List<ATypeParam> =
-        tp.name.removeSuffix(">").split("<").last().split(",").map { it.trim() }.map { typeArgument ->
+    private fun getTypeParams(returnTypeId: Id<AReturnType>?, paramId: Id<AParam>?, propId: Id<AProp>?, tp: KoTypeDeclaration): List<ATypeParam> {
+        if (!tp.name.endsWith(">")) return listOf()
+        return tp.name.removeSuffix(">").split("<").last().split(",").map { it.trim() }.map { typeArgument ->
 
             println("Searching: ${tp.name}")
             val packagePath =
@@ -135,6 +146,7 @@ public object Architect {
                 packagePath = packagePath
             )
         }
+    }
 
     private fun getAnotationEntities(
         scanResult: List<KoClassDeclaration>,
@@ -153,7 +165,7 @@ public object Architect {
 
             val aClass = AClass(
                 name = sr.name,
-                packagePath = sr.fullyQualifiedName!!,
+                packagePath = sr.fullyQualifiedName!!.beforeLastDot,
                 module = sr.packagee!!.moduleName,
                 isAbstract = sr.hasAbstractModifier,
                 isData = sr.hasDataModifier,
@@ -169,12 +181,21 @@ public object Architect {
                 aClass = aClass,
                 aProps = sr.properties(includeNested = false).map { kprop: KoPropertyDeclaration ->
                     val aPropId = Id<AProp>()
+                    val isIdentifier = identifiers
+                        .map { iden ->
+                            val kpropType = kprop.type!!.bareSourceType
+                            val kpropImport = "${this.className_to_package[kpropType]}.${kpropType}"
+                            // Import and parameter name must match with one of the identifier
+                            iden.aClass.import == kpropImport && iden.aClass.name.lowercase() == kprop.name
+                        }
+                        .contains(true)
                     APropData(
                         aProp = AProp(
                             id = aPropId,
                             classId = aClass.id,
                             name = kprop.name,
                             type = kprop.type!!.bareSourceType,
+                            packagePath = kprop.type!!.packagee!!.name,
                             annotations = kprop.annotations.map { it.name },
                             visibility = this.getVisibility(sr = sr),
                             isMutable = kprop.hasVarModifier,
@@ -185,10 +206,8 @@ public object Architect {
                             isFinal = kprop.hasFinalModifier,
                             isLateinit = kprop.hasLateinitModifier,
                             isOpen = kprop.hasOpenModifier,
-                            inlineType = if(kprop.type!!.name.contains("<")) "" else null,
-                            isIdentifier = identifiers
-                                .map { it.aClass.import == kprop.type!!.name && it.aClass.name.lowercase() == kprop.name }
-                                .contains(true)
+                            inlineType = if (kprop.type!!.name.contains("<")) "" else null,
+                            isIdentifier = isIdentifier
                         ),
                         aTypeParams = this.getTypeParams(returnTypeId = null, paramId = null, propId = aPropId, tp = kprop.type!!)
                     )

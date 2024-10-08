@@ -27,7 +27,7 @@ public class PlantUMLDomainSpaceGenerator(
                 p.aTypeParams.forEach { tp ->
                     val con = pacPath_to_domainEntity[tp.import]
                     if (con != null && !p.aProp.isIdentifier) {
-                        connections.add("${e.aClass.name} --> ${con.aClass.name}: ${p.aProp.name}")
+                        connections.add("${e.aClass.name} -up-> ${con.aClass.name}: ${p.aProp.name}")
                     }
                 }
             }
@@ -41,7 +41,6 @@ public class PlantUMLDomainSpaceGenerator(
         connections.add("@enduml")
 
         val text = (lines + connections).joinToString("\n")
-        println(this.outputFile)
         this.outputFile.writeText(text = text)
     }
 }
