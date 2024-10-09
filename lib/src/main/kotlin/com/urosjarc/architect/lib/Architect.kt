@@ -10,44 +10,22 @@ import com.urosjarc.architect.lib.extend.beforeLastDot
 import com.urosjarc.architect.lib.types.Id
 import org.apache.logging.log4j.kotlin.logger
 import java.io.InvalidClassException
+import kotlin.reflect.jvm.internal.impl.metadata.ProtoBuf
 
 public object Architect {
+    private lateinit var classMapping: ClassMapping
 
-    /**
-     * TODO: I can't get from parameters and their arguments package paths (this is bug from konsist)
-     * for example if you have data class...
-     *
-     * data class Test(
-     *      val test: Id<Employee>
-     * )
-     *
-     * parameter test have type Id from which I can't get package path, and it has type argument Employee for which
-     * I can't also get the package path, thats why I need association table...
-     */
-    private var className_to_package: MutableMap<String, String> = mutableMapOf()
+    public fun getStateData(classPackages: Map<String, String>): AStateData {
+        this.classMapping = ClassMapping(classPackages = classPackages.toMutableMap())
 
-    public fun getStateData(classPackages: Map<String, String>, vararg packages: String): AStateData {
-        logger.info("Packages: '${packages.joinToString()}'")
-
-
-        val classes: List<KoClassDeclaration> = Konsist
-            .scopeFromProject()
-            .classes()
-
-        val interfaces: List<KoInterfaceDeclaration> = Konsist
-            .scopeFromProject()
-            .interfaces()
+        val classes: List<KoClassDeclaration> = Konsist.scopeFromProject().classes()
+        val interfaces: List<KoInterfaceDeclaration> = Konsist.scopeFromProject().interfaces()
 
         /** Reset association table... */
-        this.className_to_package = classPackages.toMutableMap()
         (classes + interfaces).forEach { cls ->
             val key = cls.name
             val value = cls.packagee!!.name
-            if (this.className_to_package.contains(key)) {
-                val firstImport = "${this.className_to_package[key]}.${key}"
-                throw Exception("Duplicated class name: ${firstImport}, ${cls.fullyQualifiedName}")
-            }
-            this.className_to_package[key] = value
+            this.classMapping.setPackage(className = key, packagePath = value)
         }
 
         val identifiers = this.getAnotationEntities(classes, Identifier::class.java)
@@ -133,10 +111,9 @@ public object Architect {
         if (!tp.name.endsWith(">")) return listOf()
         return tp.name.removeSuffix(">").split("<").last().split(",").map { it.trim() }.map { typeArgument ->
 
-            println("Searching: ${tp.name}")
             val packagePath =
                 if (typeArgument.all { it.isUpperCase() } || typeArgument.length == 1) ""
-                else this.className_to_package[typeArgument] ?: throw Exception("Can't find class ${typeArgument}")
+                else this.classMapping.getPackage(className = typeArgument)
 
             ATypeParam(
                 paramId = paramId,
@@ -161,8 +138,6 @@ public object Architect {
 
 
         scanResults.forEach { sr: KoClassDeclaration ->
-            println(" * ${sr.path}")
-
             val aClass = AClass(
                 name = sr.name,
                 packagePath = sr.fullyQualifiedName!!.beforeLastDot,
@@ -184,18 +159,19 @@ public object Architect {
                     val isIdentifier = identifiers
                         .map { iden ->
                             val kpropType = kprop.type!!.bareSourceType
-                            val kpropImport = "${this.className_to_package[kpropType]}.${kpropType}"
+                            val kpropImport = "${this.classMapping.getPackage(className = kpropType)}.${kpropType}"
                             // Import and parameter name must match with one of the identifier
                             iden.aClass.import == kpropImport && iden.aClass.name.lowercase() == kprop.name
                         }
                         .contains(true)
+                    val type = kprop.type!!.bareSourceType
                     APropData(
                         aProp = AProp(
                             id = aPropId,
                             classId = aClass.id,
                             name = kprop.name,
-                            type = kprop.type!!.bareSourceType,
-                            packagePath = kprop.type!!.packagee!!.name,
+                            type = type,
+                            packagePath = this.classMapping.getPackage(className = type),
                             annotations = kprop.annotations.map { it.name },
                             visibility = this.getVisibility(sr = sr),
                             isMutable = kprop.hasVarModifier,

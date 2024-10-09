@@ -9,28 +9,38 @@ class Test_JetbrainsExposedRepositoryGenerator {
 
     @Test
     fun `test generate`() {
-        val aState = Architect.getStateData(classPackages = Utils.classPackages, "com.urosjarc.architect.lib.test_application")
+        val aStateData = Architect.getStateData(classPackages = Utils.classPackages)
 
         val exposedRepoGen = JetbrainsExposedRepositoryGenerator(
-            interfaceFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect.kt/lib/test_application/output/interfaces"),
-            sqlFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect.kt/lib/test_application/output/sql"),
-            repoFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect.kt/lib/test_application/output/repos"),
-            modelFolder = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect.kt/lib/test_application/output/models"),
+            interfaceFolder = File("/home/urosjarc/vcs/architect.kt/lib/output/interfaces"),
+            sqlFolder = File("/home/urosjarc/vcs/architect.kt/lib/output/sql"),
+            repoFolder = File("/home/urosjarc/vcs/architect.kt/lib/output/repos"),
+            modelFolder = File("/home/urosjarc/vcs/architect.kt/lib/output/models"),
             mapping = listOf(
-                "com.urosjarc.architect.lib.test_application.domain.Id" to Triple(
+                "com.urosjarc.architect.lib.types.Id" to JetbrainsExposedTypeMapping(
                     { "reference(\"${it.aProp.name}\", ${it.aTypeParams[0].name}Sql.table)" },
                     { "Id(row[table.${it.aProp.name}].value)" },
                     { ".value" },
                 ),
-                "com.urosjarc.architect.lib.test_application.domain.User.Type" to Triple(
+                "kotlin.collections.List" to JetbrainsExposedTypeMapping(
+                    { "blob(\"${it.aProp.name}\")" },
+                    { "Json.deserialize(row[table.${it.aProp.name}].value)" },
+                    { "" },
+                ),
+                "com.urosjarc.architect.lib.domain.AVisibility" to JetbrainsExposedTypeMapping(
                     { "varchar(\"${it.aProp.name}\", 200)" },
-                    { "User.Type.valueOf(row[table.${it.aProp.name}])" },
-                    { ".name" },
+                    { "AVisibility.parse(row[table.${it.aProp.name}].value)" },
+                    { "" },
+                ),
+                "kotlinx.datetime.Instant" to JetbrainsExposedTypeMapping(
+                    { "varchar(\"${it.aProp.name}\", 200)" },
+                    { "AVisibility.parse(row[table.${it.aProp.name}].value)" },
+                    { "" },
                 )
             ),
         )
 
-//        exposedRepoGen.generate(aState = aState)
+        exposedRepoGen.generate(aStateData = aStateData)
 
     }
 

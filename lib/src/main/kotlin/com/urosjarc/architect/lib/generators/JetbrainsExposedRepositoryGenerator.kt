@@ -6,7 +6,13 @@ import com.urosjarc.architect.lib.data.APropData
 import com.urosjarc.architect.lib.data.AStateData
 import java.io.File
 
-public typealias MappingData = Pair<String, Triple<(APropData) -> String, (APropData) -> String, (APropData) -> String>>
+public data class JetbrainsExposedTypeMapping(
+    val tableFieldDefinition: (APropData) -> String,
+    val toDomain: (APropData) -> String,
+    val domainValue: (APropData) -> String
+)
+
+public typealias MappingData = Pair<String, JetbrainsExposedTypeMapping>
 public typealias Mapping = List<MappingData>
 
 public class JetbrainsExposedRepositoryGenerator(
@@ -23,22 +29,22 @@ public class JetbrainsExposedRepositoryGenerator(
     private val repoPackage = this.repoFolder.absolutePath.split("/kotlin/").last().replace("/", ".")
 
     private val mapping: Mapping = mapping + listOf(
-        "kotlin.String" to Triple(
+        "kotlin.String" to JetbrainsExposedTypeMapping(
             { "varchar(\"${it.aProp.name}\", 200)" },
             { "row[table.${it.aProp.name}]" },
             { "" },
         ),
-        "kotlin.Int" to Triple(
+        "kotlin.Int" to JetbrainsExposedTypeMapping(
             { "integer(\"${it.aProp.name}\")" },
             { "row[table.${it.aProp.name}]" },
             { "" },
         ),
-        "kotlin.Float" to Triple(
+        "kotlin.Float" to JetbrainsExposedTypeMapping(
             { "float(\"${it.aProp.name}\")" },
             { "row[table.${it.aProp.name}]" },
             { "" },
         ),
-        "kotlin.Boolean" to Triple(
+        "kotlin.Boolean" to JetbrainsExposedTypeMapping(
             { "bool(\"${it.aProp.name}\")" },
             { "row[table.${it.aProp.name}]" },
             { "" },
@@ -222,7 +228,7 @@ public class JetbrainsExposedRepositoryGenerator(
     private fun generateDomainFields(clsData: AClassData): Iterable<String> {
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
-            val mappedData = this.getMappingValue(type = data.aProp.type).second.second(data)
+            val mappedData = this.getMappingValue(import = data.aProp.import).second.toDomain(data)
             fields.add("${data.aProp.name} = $mappedData,")
         }
         return fields
@@ -233,7 +239,7 @@ public class JetbrainsExposedRepositoryGenerator(
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
             if (data.aProp.isMutable || data.aProp.isIdentifier) {
-                val mappedData = this.getMappingValue(type = data.aProp.type).second.third(data)
+                val mappedData = this.getMappingValue(import = data.aProp.import).second.domainValue(data)
                 fields.add("it[${data.aProp.name}] = obj.${data.aProp.name}${mappedData}")
             }
         }
@@ -244,7 +250,7 @@ public class JetbrainsExposedRepositoryGenerator(
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
             if (!data.aProp.isOptional) {
-                val mappedData = this.getMappingValue(type = data.aProp.type).second.third(data)
+                val mappedData = this.getMappingValue(import = data.aProp.import).second.domainValue(data)
                 fields.add("it[${data.aProp.name}] = obj.${data.aProp.name}${mappedData}")
             }
         }
@@ -255,7 +261,7 @@ public class JetbrainsExposedRepositoryGenerator(
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
             if (!data.aProp.isOptional) {
-                val mappedData = this.getMappingValue(type = data.aProp.type).second.third(data)
+                val mappedData = this.getMappingValue(import = data.aProp.import).second.domainValue(data)
                 fields.add("this[t.${data.aProp.name}] = it.${data.aProp.name}${mappedData}")
             }
         }
@@ -266,15 +272,15 @@ public class JetbrainsExposedRepositoryGenerator(
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
             if (!data.aProp.isIdentifier) {
-                val mappedData = this.getMappingValue(type = data.aProp.type).second.first(data)
+                val mappedData = this.getMappingValue(import = data.aProp.import).second.tableFieldDefinition(data)
                 fields.add("val ${data.aProp.name} = $mappedData")
             }
         }
         return fields
     }
 
-    private fun getMappingValue(type: String): MappingData {
-        return mapping.firstOrNull { type == it.first }
-            ?: throw IllegalStateException("Could not found mapping for type: $type")
+    private fun getMappingValue(import: String): MappingData {
+        return mapping.firstOrNull { import == it.first }
+            ?: throw IllegalStateException("Could not found mapping for type: $import")
     }
 }

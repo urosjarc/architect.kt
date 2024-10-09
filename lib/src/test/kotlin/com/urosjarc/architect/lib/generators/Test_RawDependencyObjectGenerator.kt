@@ -9,7 +9,7 @@ class Test_RawDependencyObjectGenerator {
 
     @Test
     fun `test generate`() {
-        val aState = Architect.getStateData(classPackages = Utils.classPackages, "com.urosjarc.architect.lib.test_application")
+        val aState = Architect.getStateData(classPackages = Utils.classPackages)
 
         val di = RawDependencyObjectGenerator(
             appFile = File("/home/urosjarc/vcs/architect/lib/src/test/kotlin/com/urosjarc/architect.kt/lib/test_application/output/App.kt"),

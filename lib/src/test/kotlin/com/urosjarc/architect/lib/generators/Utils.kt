@@ -12,7 +12,8 @@ object Utils {
         "Int" to "kotlin",
         "Json" to "kotlinx.serialization.json",
         "Boolean" to "kotlin",
-        "Instant" to "kotlinx.datetime"
+        "Instant" to "kotlinx.datetime",
+        "List" to "kotlin.collections",
     )
 }
 
