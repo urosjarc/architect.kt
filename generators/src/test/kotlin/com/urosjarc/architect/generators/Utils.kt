@@ -1,8 +1,4 @@
-package com.urosjarc.architect.lib.generators
-
-import kotlinx.datetime.Instant
-import kotlinx.serialization.json.Json
-import java.util.*
+package com.urosjarc.architect.lib
 
 object Utils {
     val classPackages = mapOf(
@@ -15,11 +11,4 @@ object Utils {
         "Instant" to "kotlinx.datetime",
         "List" to "kotlin.collections",
     )
-}
-
-fun main() {
-//    UUID.randomUUID()
-//    String
-//    Instant
-    Json {  }
 }

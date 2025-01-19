@@ -13,5 +13,6 @@ kotlin {
 
 dependencies {
     implementation(project(":annotations"))
-    implementation("com.lemonappdev:konsist:0.16.1")
+    implementation(project(":lib"))
+    testImplementation(project(":lib"))
 }

@@ -10,7 +10,6 @@ import com.urosjarc.architect.lib.extend.beforeLastDot
 import com.urosjarc.architect.lib.types.Id
 import org.apache.logging.log4j.kotlin.logger
 import java.io.InvalidClassException
-import kotlin.reflect.jvm.internal.impl.metadata.ProtoBuf
 
 public object Architect {
     private lateinit var classMapping: ClassMapping
@@ -28,15 +27,15 @@ public object Architect {
             this.classMapping.setPackage(className = key, packagePath = value)
         }
 
-        val identifiers = this.getAnotationEntities(classes, Identifier::class.java)
+        val identifiers = this.getAnnotationEntities(classes, Identifier::class.java)
 
         return AStateData(
             state = AState(),
             identifiers = identifiers,
-            domainEntities = this.getAnotationEntities(classes, DomainEntity::class.java, identifiers = identifiers),
-            repos = this.getAnotationEntities(classes, Repository::class.java),
-            services = this.getAnotationEntities(classes, Service::class.java),
-            useCases = this.getAnotationEntities(classes, UseCase::class.java)
+            domainEntities = this.getAnnotationEntities(classes, DomainEntity::class.java, identifiers = identifiers),
+            repos = this.getAnnotationEntities(classes, Repository::class.java),
+            services = this.getAnnotationEntities(classes, Service::class.java),
+            useCases = this.getAnnotationEntities(classes, UseCase::class.java)
         )
     }
 
@@ -125,7 +124,7 @@ public object Architect {
         }
     }
 
-    private fun getAnotationEntities(
+    private fun getAnnotationEntities(
         scanResult: List<KoClassDeclaration>,
         annotation: Class<out Annotation>,
         identifiers: List<AClassData> = listOf()
