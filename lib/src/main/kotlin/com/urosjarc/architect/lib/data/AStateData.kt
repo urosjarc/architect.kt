@@ -8,6 +8,7 @@ public data class AStateData(
     public val state: AState,
     public val identifiers: List<AClassData>,
     public val domainEntities: List<AClassData>,
+    public val domainValues: List<AEnumData>,
     public val repos: List<AClassData>,
     public val services: List<AClassData>,
     public val useCases: List<AClassData>,

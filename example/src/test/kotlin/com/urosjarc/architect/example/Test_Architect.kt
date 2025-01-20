@@ -1,11 +1,7 @@
-package com.urosjarc.architect.lib
+package com.urosjarc.architect.generators
 
-import com.urosjarc.architect.lib.generators.DomainModelsGenerator
-import com.urosjarc.architect.lib.generators.JetbrainsExposedRepositoryGenerator
-import com.urosjarc.architect.lib.generators.JetbrainsExposedTypeMapping
-import com.urosjarc.architect.lib.generators.PlantUMLDependencySpaceGenerator
-import com.urosjarc.architect.lib.generators.PlantUMLDomainSpaceGenerator
-import com.urosjarc.architect.lib.generators.RawDependencyObjectGenerator
+import com.urosjarc.architect.lib.Architect
+import com.urosjarc.architect.lib.Utils
 import com.urosjarc.architect.lib.serializers.UUIDSerializer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -16,7 +12,7 @@ import kotlin.test.Test
 
 
 class Test_Architect {
-    val folder = File("/home/urosjarc/vcs/architect.kt/lib/src/main/kotlin/com/urosjarc/architect/generators/output")
+    val folder = File("/home/urosjarc/vcs/architect.kt/example/src/main/kotlin/com/urosjarc/architect/example/app")
 
     val domainModelsGenerator = DomainModelsGenerator(
         modelFolder = File(folder, "models"),
@@ -27,7 +23,7 @@ class Test_Architect {
         repoFolder = File(folder, "repos"),
         modelFolder = File(folder, "models"),
         mapping = listOf(
-            "com.urosjarc.architect.lib.types.Id" to JetbrainsExposedTypeMapping(
+            "com.urosjarc.architect.example.types.Id" to JetbrainsExposedTypeMapping(
                 { "reference(\"${it.aProp.name}\", ${it.aTypeParams[0].name}Sql.table)" },
                 { "Id(row[table.${it.aProp.name}].value)" },
                 { ".value" },
@@ -35,11 +31,6 @@ class Test_Architect {
             "kotlin.collections.List" to JetbrainsExposedTypeMapping(
                 { "blob(\"${it.aProp.name}\")" },
                 { "Json.encodeToString(row[table.${it.aProp.name}].value)" },
-                { "" },
-            ),
-            "com.urosjarc.architect.lib.domain.AVisibility" to JetbrainsExposedTypeMapping(
-                { "enumerationByName<AVisibility>(\"${it.aProp.name}\", 200)" },
-                { "row[table.${it.aProp.name}]" },
                 { "" },
             ),
             "kotlinx.datetime.Instant" to JetbrainsExposedTypeMapping(
@@ -68,7 +59,7 @@ class Test_Architect {
         folder.deleteRecursively()
         folder.mkdirs()
 
-        val aStateData = Architect.getStateData(classPackages = Utils.classPackages)
+        val aStateData = Architect.getStateData(scannedPackage = "com.urosjarc.architect.example", classPackages = Utils.classPackages)
         val json = Json {
             prettyPrint = true
             serializersModule = SerializersModule {
@@ -81,7 +72,7 @@ class Test_Architect {
 
         domainModelsGenerator.generate(aStateData = aStateData)
 
-        val aStateData2 = Architect.getStateData(classPackages = Utils.classPackages)
+        val aStateData2 = Architect.getStateData(scannedPackage = "com.urosjarc.architect.example", classPackages = Utils.classPackages)
         val aStateData2File = File(folder, "aStateData2.json")
         aStateData2File.createNewFile()
         aStateData2File.writeText(json.encodeToString(aStateData))

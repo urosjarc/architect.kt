@@ -13,5 +13,6 @@ kotlin {
 
 dependencies {
     implementation(project(":annotations"))
-    implementation("com.lemonappdev:konsist:0.17.3")
+    testImplementation(project(":lib"))
+    testImplementation(project(":generators"))
 }

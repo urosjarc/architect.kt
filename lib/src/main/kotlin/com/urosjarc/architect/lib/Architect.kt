@@ -6,7 +6,7 @@ import com.lemonappdev.konsist.api.declaration.type.KoTypeDeclaration
 import com.urosjarc.architect.annotations.*
 import com.urosjarc.architect.lib.data.*
 import com.urosjarc.architect.lib.domain.*
-import com.urosjarc.architect.lib.extend.beforeLastDot
+import com.urosjarc.architect.lib.extend.ext_beforeLastDot
 import com.urosjarc.architect.lib.types.Id
 import org.apache.logging.log4j.kotlin.logger
 import java.io.InvalidClassException
@@ -14,14 +14,20 @@ import java.io.InvalidClassException
 public object Architect {
     private lateinit var classMapping: ClassMapping
 
-    public fun getStateData(classPackages: Map<String, String>): AStateData {
+    public fun getStateData(scannedPackage: String, classPackages: Map<String, String>): AStateData {
         this.classMapping = ClassMapping(classPackages = classPackages.toMutableMap())
 
-        val classes: List<KoClassDeclaration> = Konsist.scopeFromProject().classes()
+        val classesAndEnums: List<KoClassDeclaration> = Konsist.scopeFromProject().classes()
+            .filter { it.packagee!!.name.startsWith(scannedPackage) }
+
         val interfaces: List<KoInterfaceDeclaration> = Konsist.scopeFromProject().interfaces()
+            .filter { it.packagee!!.name.startsWith(scannedPackage) }
+
+        val classes = classesAndEnums.filter { !it.hasEnumModifier }
+        val enums = classesAndEnums.filter { it.hasEnumModifier }
 
         /** Reset association table... */
-        (classes + interfaces).forEach { cls ->
+        (classesAndEnums + interfaces).forEach { cls ->
             val key = cls.name
             val value = cls.packagee!!.name
             this.classMapping.setPackage(className = key, packagePath = value)
@@ -33,6 +39,7 @@ public object Architect {
             state = AState(),
             identifiers = identifiers,
             domainEntities = this.getAnnotationEntities(classes, DomainEntity::class.java, identifiers = identifiers),
+            domainValues = this.getAnnotationEnums(enums, DomainValues::class.java),
             repos = this.getAnnotationEntities(classes, Repository::class.java),
             services = this.getAnnotationEntities(classes, Service::class.java),
             useCases = this.getAnnotationEntities(classes, UseCase::class.java)
@@ -124,6 +131,34 @@ public object Architect {
         }
     }
 
+    private fun getAnnotationEnums(scanResult: List<KoClassDeclaration>, annotation: Class<out Annotation>): List<AEnumData> {
+
+        val aEntities = mutableListOf<AEnumData>()
+        val scanResults: List<KoClassDeclaration> = scanResult.filter { it.annotations.filter { it.name == annotation.simpleName }.isNotEmpty() }
+
+        logger.info("Found ${scanResults.size} @${annotation.simpleName}")
+
+        scanResults.forEach { sr: KoClassDeclaration ->
+            val aEnum = AEnum(
+                name = sr.name,
+                packagePath = sr.fullyQualifiedName!!.ext_beforeLastDot,
+                module = sr.packagee!!.moduleName,
+                visibility = this.getVisibility(sr = sr),
+                type = sr.primaryConstructor?.parameters?.first()?.type?.bareSourceType,
+            )
+
+            val aEntity = AEnumData(
+                aEnum = aEnum,
+                aEnumValues = sr.enumConstants.map { ec: KoEnumConstantDeclaration ->
+                    val value = if (ec.text.contains("(")) ec.text.substringAfter("(").substringBefore(")").replace("\"", "").trim() else null
+                    AEnumValue(name = ec.name, value = value)
+                }
+            )
+            aEntities.add(aEntity)
+        }
+        return aEntities
+    }
+
     private fun getAnnotationEntities(
         scanResult: List<KoClassDeclaration>,
         annotation: Class<out Annotation>,
@@ -139,7 +174,7 @@ public object Architect {
         scanResults.forEach { sr: KoClassDeclaration ->
             val aClass = AClass(
                 name = sr.name,
-                packagePath = sr.fullyQualifiedName!!.beforeLastDot,
+                packagePath = sr.fullyQualifiedName!!.ext_beforeLastDot,
                 module = sr.packagee!!.moduleName,
                 isAbstract = sr.hasAbstractModifier,
                 isData = sr.hasDataModifier,
