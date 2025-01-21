@@ -9,4 +9,6 @@ public data class AClassDataNode(
     override fun toString(): String {
         return aClassData.aClass.import
     }
+
+    val fullPath: String get(): String = folders.joinToString(".")
 }

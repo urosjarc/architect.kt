@@ -1,5 +1,7 @@
 package com.urosjarc.architect.lib
 
+import org.apache.logging.log4j.kotlin.logger
+
 internal class ClassMapping(classPackages: Map<String, String>) {
 
     /**
@@ -18,7 +20,7 @@ internal class ClassMapping(classPackages: Map<String, String>) {
     internal fun setPackage(className: String, packagePath: String) {
         if (this.className_to_package.contains(className)) {
             val firstImport = "${this.className_to_package[className]}.${className}"
-            throw Exception("Duplicated class name: ${firstImport}, ${className}")
+            logger.warn("Duplicated class name: ${firstImport}, ${className}")
         }
         this.className_to_package[className] = packagePath
     }

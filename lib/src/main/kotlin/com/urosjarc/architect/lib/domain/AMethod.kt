@@ -10,5 +10,6 @@ public data class AMethod(
     val classId: Id<AClass>,
     val name: String,
     val visibility: AVisibility,
+    val docs: String?,
     val id: Id<AMethod> = Id(),
 )

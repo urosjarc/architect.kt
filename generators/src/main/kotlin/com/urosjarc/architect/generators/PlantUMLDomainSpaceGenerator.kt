@@ -3,6 +3,7 @@ package com.urosjarc.architect.generators
 import com.urosjarc.architect.lib.Generator
 import com.urosjarc.architect.lib.data.AStateData
 import com.urosjarc.architect.lib.extend.ext_afterLastDot
+import com.urosjarc.architect.lib.extend.ext_firstLine
 import java.io.File
 
 public class PlantUMLDomainSpaceGenerator(
@@ -19,6 +20,11 @@ public class PlantUMLDomainSpaceGenerator(
 
         aStateData.domainEntities.forEach { e ->
             lines.add("class ${e.aClass.name} {")
+
+            e.aClass.docs?.let {
+                lines.add("\t${it.ext_firstLine}")
+                lines.add("\t==")
+            }
 
             e.aProps.forEach { p ->
                 var simpleType = p.aProp.type.ext_afterLastDot
@@ -39,6 +45,23 @@ public class PlantUMLDomainSpaceGenerator(
             lines.add("}")
 
         }
+
+        aStateData.domainValues.forEach { e ->
+            lines.add("enum ${e.aEnum.name} {")
+
+            e.aEnum.docs?.let {
+                lines.add("\t${it.ext_firstLine}")
+                lines.add("\t==")
+            }
+
+            e.aEnumValues.forEach { p ->
+                lines.add("\t${p.name}: ${p.value}")
+                p.docs?.let { lines.add("\t$it") }
+                p.docs?.let { lines.add("\t==") }
+            }
+            lines.add("}")
+        }
+
         connections.add("@enduml")
 
         val text = (lines + connections).joinToString("\n")

@@ -10,7 +10,9 @@ public data class AClass(
     val name: String,
     val packagePath: String,
     val module: String?,
+    val docs: String?,
 
+    val isInterface: Boolean,
     val isAbstract: Boolean,
     val isData: Boolean,
     val isFinal: Boolean,

@@ -1,0 +1,1358 @@
+{
+    "state": {
+        "id": "f3eef71a-ab4b-4d33-a36c-8585503756b4",
+        "created": "2025-01-21T22:22:01.640068297Z"
+    },
+    "identifiers": [
+        {
+            "aClass": {
+                "name": "Id",
+                "packagePath": "com.urosjarc.architect.example.types",
+                "module": "example",
+                "docs": null,
+                "isInterface": false,
+                "isAbstract": false,
+                "isData": false,
+                "isFinal": false,
+                "isInner": false,
+                "isOpen": false,
+                "isSealed": false,
+                "isValue": true,
+                "visibility": "PUBLIC",
+                "id": "d36c5cb0-1e3c-4911-9655-cb825a6f09ef"
+            },
+            "aConstructor": {
+                "classId": "d36c5cb0-1e3c-4911-9655-cb825a6f09ef",
+                "id": "abe11863-eeb1-473d-b495-d0b27cb325dc"
+            },
+            "aProps": [
+                {
+                    "aProp": {
+                        "classId": "d36c5cb0-1e3c-4911-9655-cb825a6f09ef",
+                        "name": "value",
+                        "packagePath": "java.util",
+                        "type": "UUID",
+                        "inlineType": null,
+                        "annotations": [
+                            "Contextual"
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": true,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": null,
+                        "id": "4efe358b-8911-496b-9c80-fd3a64e90de5"
+                    },
+                    "aTypeParams": [
+                    ]
+                }
+            ],
+            "aMethods": [
+                {
+                    "aMethod": {
+                        "classId": "d36c5cb0-1e3c-4911-9655-cb825a6f09ef",
+                        "name": "toString",
+                        "visibility": "PUBLIC",
+                        "docs": null,
+                        "id": "89e89298-c942-4519-93e7-219e67ec9cab"
+                    },
+                    "aParams": [
+                    ],
+                    "aReturnTypeData": {
+                        "aReturnType": {
+                            "type": "String",
+                            "methodId": "89e89298-c942-4519-93e7-219e67ec9cab",
+                            "id": "5685af5b-95cb-4511-80ad-5fbfa4996cf9"
+                        },
+                        "aTypeParams": [
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "aClass": {
+                "name": "NumId",
+                "packagePath": "com.urosjarc.architect.example.types",
+                "module": "example",
+                "docs": null,
+                "isInterface": false,
+                "isAbstract": false,
+                "isData": false,
+                "isFinal": false,
+                "isInner": false,
+                "isOpen": false,
+                "isSealed": false,
+                "isValue": true,
+                "visibility": "PUBLIC",
+                "id": "d15ddb90-7352-4dbd-af2f-3e537b5eaca2"
+            },
+            "aConstructor": {
+                "classId": "d15ddb90-7352-4dbd-af2f-3e537b5eaca2",
+                "id": "f041d0d7-e256-472a-ad63-bd4cbd6de2aa"
+            },
+            "aProps": [
+                {
+                    "aProp": {
+                        "classId": "d15ddb90-7352-4dbd-af2f-3e537b5eaca2",
+                        "name": "value",
+                        "packagePath": "kotlin",
+                        "type": "Int",
+                        "inlineType": null,
+                        "annotations": [
+                            "Contextual"
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": null,
+                        "id": "8a4eef16-02bd-4de3-a2f6-abd6b65d2309"
+                    },
+                    "aTypeParams": [
+                    ]
+                }
+            ],
+            "aMethods": [
+                {
+                    "aMethod": {
+                        "classId": "d15ddb90-7352-4dbd-af2f-3e537b5eaca2",
+                        "name": "toString",
+                        "visibility": "PUBLIC",
+                        "docs": null,
+                        "id": "0c222d3d-978f-4bdc-b3ea-5085069b896b"
+                    },
+                    "aParams": [
+                    ],
+                    "aReturnTypeData": {
+                        "aReturnType": {
+                            "type": "String",
+                            "methodId": "0c222d3d-978f-4bdc-b3ea-5085069b896b",
+                            "id": "91950085-ddba-41d0-a780-2abe4cb13cbc"
+                        },
+                        "aTypeParams": [
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "domainEntities": [
+        {
+            "aClass": {
+                "name": "GrandParent",
+                "packagePath": "com.urosjarc.architect.example.domain",
+                "module": "example",
+                "docs": "Represents the GrandParent entity in the domain model",
+                "isInterface": false,
+                "isAbstract": false,
+                "isData": true,
+                "isFinal": false,
+                "isInner": false,
+                "isOpen": false,
+                "isSealed": false,
+                "isValue": false,
+                "visibility": "PUBLIC",
+                "id": "26728450-5bdc-440f-80bc-a18b12c8bc43"
+            },
+            "aConstructor": {
+                "classId": "26728450-5bdc-440f-80bc-a18b12c8bc43",
+                "id": "fed7f1bf-9801-4d70-9b38-9b6ffa5d2057"
+            },
+            "aProps": [
+                {
+                    "aProp": {
+                        "classId": "26728450-5bdc-440f-80bc-a18b12c8bc43",
+                        "name": "name",
+                        "packagePath": "kotlin",
+                        "type": "String",
+                        "inlineType": null,
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents the GrandParent entity in the domain model",
+                        "id": "afeb38a3-eaa1-4fbc-834a-41a839348d08"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "26728450-5bdc-440f-80bc-a18b12c8bc43",
+                        "name": "surname",
+                        "packagePath": "kotlin",
+                        "type": "String",
+                        "inlineType": null,
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents the GrandParent entity in the domain model",
+                        "id": "9b37d876-5fd3-4ee0-88f9-3e89706e04a2"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "26728450-5bdc-440f-80bc-a18b12c8bc43",
+                        "name": "birth",
+                        "packagePath": "kotlinx.datetime",
+                        "type": "Instant",
+                        "inlineType": null,
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents the GrandParent entity in the domain model",
+                        "id": "597f03d1-b523-421a-abab-2088aa14a517"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "26728450-5bdc-440f-80bc-a18b12c8bc43",
+                        "name": "sex",
+                        "packagePath": "com.urosjarc.architect.example.domain",
+                        "type": "Sex",
+                        "inlineType": null,
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents the GrandParent entity in the domain model",
+                        "id": "8e3f524c-bf2e-470a-88ac-f1c940846157"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "26728450-5bdc-440f-80bc-a18b12c8bc43",
+                        "name": "id",
+                        "packagePath": "com.urosjarc.architect.example.types",
+                        "type": "Id",
+                        "inlineType": "",
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": true,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": true,
+                        "docs": "Represents the GrandParent entity in the domain model",
+                        "id": "04fb78ca-6cba-4318-86ed-b5298bc7362c"
+                    },
+                    "aTypeParams": [
+                        {
+                            "propId": "04fb78ca-6cba-4318-86ed-b5298bc7362c",
+                            "paramId": null,
+                            "returnTypeId": null,
+                            "name": "GrandParent",
+                            "packagePath": "com.urosjarc.architect.example.domain",
+                            "id": "1272b6ee-22cf-4b9b-99e8-f551a06cd1f7"
+                        }
+                    ]
+                }
+            ],
+            "aMethods": [
+            ]
+        },
+        {
+            "aClass": {
+                "name": "Child",
+                "packagePath": "com.urosjarc.architect.example.domain",
+                "module": "example",
+                "docs": null,
+                "isInterface": false,
+                "isAbstract": false,
+                "isData": true,
+                "isFinal": false,
+                "isInner": false,
+                "isOpen": false,
+                "isSealed": false,
+                "isValue": false,
+                "visibility": "PUBLIC",
+                "id": "14f01fe1-5502-4d90-9939-34282863bb71"
+            },
+            "aConstructor": {
+                "classId": "14f01fe1-5502-4d90-9939-34282863bb71",
+                "id": "db1cf81b-7653-4559-8f06-47774f25b982"
+            },
+            "aProps": [
+                {
+                    "aProp": {
+                        "classId": "14f01fe1-5502-4d90-9939-34282863bb71",
+                        "name": "name",
+                        "packagePath": "kotlin",
+                        "type": "String",
+                        "inlineType": null,
+                        "annotations": [
+                            "New"
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": null,
+                        "id": "838c1430-84f2-4481-bfc8-a76e8fd1d472"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "14f01fe1-5502-4d90-9939-34282863bb71",
+                        "name": "email",
+                        "packagePath": "kotlin",
+                        "type": "String",
+                        "inlineType": null,
+                        "annotations": [
+                            "New"
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": null,
+                        "id": "b3ba92c4-5fea-4262-80f4-4320ad0dda77"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "14f01fe1-5502-4d90-9939-34282863bb71",
+                        "name": "surname",
+                        "packagePath": "kotlin",
+                        "type": "String",
+                        "inlineType": null,
+                        "annotations": [
+                            "New",
+                            "Mod"
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": null,
+                        "id": "545442b4-f962-41b0-b2f3-2dac43bae9a5"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "14f01fe1-5502-4d90-9939-34282863bb71",
+                        "name": "birth",
+                        "packagePath": "kotlinx.datetime",
+                        "type": "Instant",
+                        "inlineType": null,
+                        "annotations": [
+                            "New"
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": null,
+                        "id": "8758fa10-2566-4451-aff2-5074149f6007"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "14f01fe1-5502-4d90-9939-34282863bb71",
+                        "name": "sex",
+                        "packagePath": "com.urosjarc.architect.example.domain",
+                        "type": "Sex",
+                        "inlineType": null,
+                        "annotations": [
+                            "New"
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": true,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": null,
+                        "id": "8e312552-f19b-4ebf-ac3e-a057881ba808"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "14f01fe1-5502-4d90-9939-34282863bb71",
+                        "name": "parent",
+                        "packagePath": "com.urosjarc.architect.example.types",
+                        "type": "Id",
+                        "inlineType": "",
+                        "annotations": [
+                            "Mod"
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": null,
+                        "id": "2b2d8524-f042-4ccb-be1a-8e00089f10bc"
+                    },
+                    "aTypeParams": [
+                        {
+                            "propId": "2b2d8524-f042-4ccb-be1a-8e00089f10bc",
+                            "paramId": null,
+                            "returnTypeId": null,
+                            "name": "Parent",
+                            "packagePath": "com.urosjarc.architect.example.domain",
+                            "id": "6bb08808-ac57-4423-a023-fabe40185d72"
+                        }
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "14f01fe1-5502-4d90-9939-34282863bb71",
+                        "name": "cash",
+                        "packagePath": "kotlin",
+                        "type": "Double",
+                        "inlineType": null,
+                        "annotations": [
+                            "Mod"
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": null,
+                        "id": "5c7ff8a4-58f7-4ec6-b2b7-91c12c80a96e"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "14f01fe1-5502-4d90-9939-34282863bb71",
+                        "name": "telephone",
+                        "packagePath": "kotlin",
+                        "type": "String",
+                        "inlineType": null,
+                        "annotations": [
+                            "Mod"
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": null,
+                        "id": "99641a44-36f7-468c-aac2-6c4f6a76fa0e"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "14f01fe1-5502-4d90-9939-34282863bb71",
+                        "name": "id",
+                        "packagePath": "com.urosjarc.architect.example.types",
+                        "type": "Id",
+                        "inlineType": "",
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": true,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": true,
+                        "docs": null,
+                        "id": "22a86c36-8bc2-4cb7-a30d-bfcd434ded30"
+                    },
+                    "aTypeParams": [
+                        {
+                            "propId": "22a86c36-8bc2-4cb7-a30d-bfcd434ded30",
+                            "paramId": null,
+                            "returnTypeId": null,
+                            "name": "Child",
+                            "packagePath": "com.urosjarc.architect.example.domain",
+                            "id": "989120a0-0e54-4d4f-8ad5-80face299db2"
+                        }
+                    ]
+                }
+            ],
+            "aMethods": [
+            ]
+        },
+        {
+            "aClass": {
+                "name": "Parent",
+                "packagePath": "com.urosjarc.architect.example.domain",
+                "module": "example",
+                "docs": "Represents the Parent entity in the domain model.",
+                "isInterface": false,
+                "isAbstract": false,
+                "isData": true,
+                "isFinal": false,
+                "isInner": false,
+                "isOpen": false,
+                "isSealed": false,
+                "isValue": false,
+                "visibility": "PUBLIC",
+                "id": "97899877-579c-4701-8396-bda91525243d"
+            },
+            "aConstructor": {
+                "classId": "97899877-579c-4701-8396-bda91525243d",
+                "id": "1b61cad8-4515-42c6-a874-0bf7d96b90d6"
+            },
+            "aProps": [
+                {
+                    "aProp": {
+                        "classId": "97899877-579c-4701-8396-bda91525243d",
+                        "name": "name",
+                        "packagePath": "kotlin",
+                        "type": "String",
+                        "inlineType": null,
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents the Parent entity in the domain model.",
+                        "id": "0d80a684-ea56-4907-ab3c-73e679185c8a"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "97899877-579c-4701-8396-bda91525243d",
+                        "name": "surname",
+                        "packagePath": "kotlin",
+                        "type": "String",
+                        "inlineType": null,
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents the Parent entity in the domain model.",
+                        "id": "ecc517ee-bfae-4d32-b7ef-a5c460f69b40"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "97899877-579c-4701-8396-bda91525243d",
+                        "name": "birth",
+                        "packagePath": "kotlinx.datetime",
+                        "type": "Instant",
+                        "inlineType": null,
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents the Parent entity in the domain model.",
+                        "id": "cba36de1-ef54-4273-a661-2483be0b84ab"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "97899877-579c-4701-8396-bda91525243d",
+                        "name": "parent",
+                        "packagePath": "com.urosjarc.architect.example.types",
+                        "type": "Id",
+                        "inlineType": "",
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents the Parent entity in the domain model.",
+                        "id": "8a2c6ada-9bc9-441d-babb-effe728332a3"
+                    },
+                    "aTypeParams": [
+                        {
+                            "propId": "8a2c6ada-9bc9-441d-babb-effe728332a3",
+                            "paramId": null,
+                            "returnTypeId": null,
+                            "name": "GrandParent",
+                            "packagePath": "com.urosjarc.architect.example.domain",
+                            "id": "216054ae-a43a-4006-8885-e5acf05175e9"
+                        }
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "97899877-579c-4701-8396-bda91525243d",
+                        "name": "sex",
+                        "packagePath": "com.urosjarc.architect.example.domain",
+                        "type": "Sex",
+                        "inlineType": null,
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents the Parent entity in the domain model.",
+                        "id": "1ef11293-8612-4a6f-9e84-4aa928f0f3d9"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "97899877-579c-4701-8396-bda91525243d",
+                        "name": "id",
+                        "packagePath": "com.urosjarc.architect.example.types",
+                        "type": "Id",
+                        "inlineType": "",
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": true,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": true,
+                        "docs": "Represents the Parent entity in the domain model.",
+                        "id": "df5c23c8-e96b-4327-92d5-01aa9851622b"
+                    },
+                    "aTypeParams": [
+                        {
+                            "propId": "df5c23c8-e96b-4327-92d5-01aa9851622b",
+                            "paramId": null,
+                            "returnTypeId": null,
+                            "name": "Parent",
+                            "packagePath": "com.urosjarc.architect.example.domain",
+                            "id": "f984b994-b936-4ae5-94fa-8e0aabb992a3"
+                        }
+                    ]
+                }
+            ],
+            "aMethods": [
+            ]
+        }
+    ],
+    "domainValues": [
+        {
+            "aEnum": {
+                "name": "Sex",
+                "packagePath": "com.urosjarc.architect.example.domain",
+                "module": "example",
+                "visibility": "PUBLIC",
+                "type": "Int",
+                "docs": "Represents the biological sex of an individual.",
+                "id": "0f589db2-7de0-44de-afec-be6835491873"
+            },
+            "aEnumValues": [
+                {
+                    "id": "ca2eb5a0-861c-4eeb-9e7e-07f0c18339da",
+                    "name": "MALE",
+                    "value": "0",
+                    "docs": "Represents the male biological sex."
+                },
+                {
+                    "id": "15a5f249-78bd-4cbe-a835-b27f212d3618",
+                    "name": "FEMAIL",
+                    "value": "1",
+                    "docs": "Represents the female biological sex."
+                },
+                {
+                    "id": "e41a79d8-8daf-456d-89b0-4ea9849fc2fb",
+                    "name": "UNDEFINED",
+                    "value": "2",
+                    "docs": null
+                }
+            ]
+        }
+    ],
+    "repos": [
+        {
+            "aClass": {
+                "name": "ChildRepo",
+                "packagePath": "com.urosjarc.architect.example.interfaces",
+                "module": "example",
+                "docs": null,
+                "isInterface": true,
+                "isAbstract": false,
+                "isData": false,
+                "isFinal": false,
+                "isInner": false,
+                "isOpen": false,
+                "isSealed": false,
+                "isValue": false,
+                "visibility": "PUBLIC",
+                "id": "a4dccfbb-b896-4474-92ed-a823f332237e"
+            },
+            "aConstructor": {
+                "classId": "a4dccfbb-b896-4474-92ed-a823f332237e",
+                "id": "864500a4-d925-4577-9f66-32abec75682f"
+            },
+            "aProps": [
+            ],
+            "aMethods": [
+            ]
+        },
+        {
+            "aClass": {
+                "name": "GrandParentRepo",
+                "packagePath": "com.urosjarc.architect.example.interfaces",
+                "module": "example",
+                "docs": null,
+                "isInterface": true,
+                "isAbstract": false,
+                "isData": false,
+                "isFinal": false,
+                "isInner": false,
+                "isOpen": false,
+                "isSealed": false,
+                "isValue": false,
+                "visibility": "PUBLIC",
+                "id": "1a301881-2715-4129-a71c-9b95958b7d6b"
+            },
+            "aConstructor": {
+                "classId": "1a301881-2715-4129-a71c-9b95958b7d6b",
+                "id": "006136af-9d1d-4275-8ce9-3e7f8fda7e4a"
+            },
+            "aProps": [
+            ],
+            "aMethods": [
+            ]
+        },
+        {
+            "aClass": {
+                "name": "ParentRepo",
+                "packagePath": "com.urosjarc.architect.example.interfaces",
+                "module": "example",
+                "docs": null,
+                "isInterface": true,
+                "isAbstract": false,
+                "isData": false,
+                "isFinal": false,
+                "isInner": false,
+                "isOpen": false,
+                "isSealed": false,
+                "isValue": false,
+                "visibility": "PUBLIC",
+                "id": "151851e4-43be-4257-84a9-a8497dea4fbc"
+            },
+            "aConstructor": {
+                "classId": "151851e4-43be-4257-84a9-a8497dea4fbc",
+                "id": "e2b10784-1b04-4f43-8e1d-60e32f81d9a0"
+            },
+            "aProps": [
+            ],
+            "aMethods": [
+            ]
+        }
+    ],
+    "services": [
+        {
+            "aClass": {
+                "name": "SmsService",
+                "packagePath": "com.urosjarc.architect.example.services",
+                "module": "example",
+                "docs": null,
+                "isInterface": true,
+                "isAbstract": false,
+                "isData": false,
+                "isFinal": false,
+                "isInner": false,
+                "isOpen": false,
+                "isSealed": false,
+                "isValue": false,
+                "visibility": "PUBLIC",
+                "id": "5e37188a-ac1a-45f8-b826-0f6d91056e42"
+            },
+            "aConstructor": {
+                "classId": "5e37188a-ac1a-45f8-b826-0f6d91056e42",
+                "id": "d7def391-fb1d-4662-bb1d-a908f2e29c51"
+            },
+            "aProps": [
+            ],
+            "aMethods": [
+                {
+                    "aMethod": {
+                        "classId": "5e37188a-ac1a-45f8-b826-0f6d91056e42",
+                        "name": "send",
+                        "visibility": "PUBLIC",
+                        "docs": null,
+                        "id": "15323656-ba94-4fb1-bb36-19aec70cdf51"
+                    },
+                    "aParams": [
+                        {
+                            "aParam": {
+                                "methodId": "15323656-ba94-4fb1-bb36-19aec70cdf51",
+                                "name": "text",
+                                "type": "String",
+                                "isOptional": false,
+                                "id": "97151bfe-bd86-41f3-bba6-23f1627c7361"
+                            },
+                            "aTypeParams": [
+                            ]
+                        }
+                    ],
+                    "aReturnTypeData": {
+                        "aReturnType": {
+                            "type": "Boolean",
+                            "methodId": "15323656-ba94-4fb1-bb36-19aec70cdf51",
+                            "id": "2596ebfa-8f50-4c43-8bdd-9c69da4cde44"
+                        },
+                        "aTypeParams": [
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "aClass": {
+                "name": "NetworkService",
+                "packagePath": "com.urosjarc.architect.example.services",
+                "module": "example",
+                "docs": null,
+                "isInterface": true,
+                "isAbstract": false,
+                "isData": false,
+                "isFinal": false,
+                "isInner": false,
+                "isOpen": false,
+                "isSealed": false,
+                "isValue": false,
+                "visibility": "PUBLIC",
+                "id": "43ceb537-2386-4f7b-b44d-4f5afaee6c76"
+            },
+            "aConstructor": {
+                "classId": "43ceb537-2386-4f7b-b44d-4f5afaee6c76",
+                "id": "dd269811-a8f2-4b55-89fa-0c1d6fce9d17"
+            },
+            "aProps": [
+            ],
+            "aMethods": [
+                {
+                    "aMethod": {
+                        "classId": "43ceb537-2386-4f7b-b44d-4f5afaee6c76",
+                        "name": "emailDomainExist",
+                        "visibility": "PUBLIC",
+                        "docs": null,
+                        "id": "0320405b-b331-4562-b053-9f348b5a8145"
+                    },
+                    "aParams": [
+                        {
+                            "aParam": {
+                                "methodId": "0320405b-b331-4562-b053-9f348b5a8145",
+                                "name": "email",
+                                "type": "String",
+                                "isOptional": false,
+                                "id": "ab4128a9-3e0c-43bd-8889-c47b24f7c04d"
+                            },
+                            "aTypeParams": [
+                            ]
+                        }
+                    ],
+                    "aReturnTypeData": {
+                        "aReturnType": {
+                            "type": "Boolean",
+                            "methodId": "0320405b-b331-4562-b053-9f348b5a8145",
+                            "id": "92ab3b74-ed22-4a69-96ee-7413da7cf60f"
+                        },
+                        "aTypeParams": [
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "aClass": {
+                "name": "EmailService",
+                "packagePath": "com.urosjarc.architect.example.services",
+                "module": "example",
+                "docs": "Provides functionality for sending emails.\n\nThis service interface defines a contract for sending email messages. Implementations\nof this interface are expected to handle the actual email transmission process.",
+                "isInterface": true,
+                "isAbstract": false,
+                "isData": false,
+                "isFinal": false,
+                "isInner": false,
+                "isOpen": false,
+                "isSealed": false,
+                "isValue": false,
+                "visibility": "PUBLIC",
+                "id": "32cb8f92-68cf-4ae4-a1d4-0711056f2761"
+            },
+            "aConstructor": {
+                "classId": "32cb8f92-68cf-4ae4-a1d4-0711056f2761",
+                "id": "b5dc94d2-ffbf-4602-828d-7e7a00b42ed6"
+            },
+            "aProps": [
+            ],
+            "aMethods": [
+                {
+                    "aMethod": {
+                        "classId": "32cb8f92-68cf-4ae4-a1d4-0711056f2761",
+                        "name": "send",
+                        "visibility": "PUBLIC",
+                        "docs": null,
+                        "id": "d36b720e-26c1-4015-90d7-8f961cd5e4aa"
+                    },
+                    "aParams": [
+                        {
+                            "aParam": {
+                                "methodId": "d36b720e-26c1-4015-90d7-8f961cd5e4aa",
+                                "name": "email",
+                                "type": "String",
+                                "isOptional": false,
+                                "id": "5fc93ada-7633-457d-b769-6f52c8036638"
+                            },
+                            "aTypeParams": [
+                            ]
+                        }
+                    ],
+                    "aReturnTypeData": {
+                        "aReturnType": {
+                            "type": "Boolean",
+                            "methodId": "d36b720e-26c1-4015-90d7-8f961cd5e4aa",
+                            "id": "1d0468d6-3f36-48c8-9ee7-c91fd1c2e9a1"
+                        },
+                        "aTypeParams": [
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "useCases": [
+        {
+            "aClass": {
+                "name": "RegisterNewChild",
+                "packagePath": "com.urosjarc.architect.example.usecases",
+                "module": "example",
+                "docs": "Represents a use case for registering a new child in the system.\n\nThis class handles the process of registering a child, which includes verifying\nthat the child does not already exist, checking that the provided email domain\nis valid, saving the child into the repository, and sending notifications through email\nand SMS upon successful registration.\n\n@property childRepo Repository for handling child data storage and retrieval operations.\n@property emailService Service for sending email notifications.\n@property smsService Service for sending SMS notifications.\n@property networkService Service for validating email domain existence.",
+                "isInterface": false,
+                "isAbstract": false,
+                "isData": true,
+                "isFinal": false,
+                "isInner": false,
+                "isOpen": false,
+                "isSealed": false,
+                "isValue": false,
+                "visibility": "PUBLIC",
+                "id": "f5277a1e-4e24-469c-8cc8-d3bf406aa121"
+            },
+            "aConstructor": {
+                "classId": "f5277a1e-4e24-469c-8cc8-d3bf406aa121",
+                "id": "352da297-ff00-49b4-9e5d-bf1b2deb373a"
+            },
+            "aProps": [
+                {
+                    "aProp": {
+                        "classId": "f5277a1e-4e24-469c-8cc8-d3bf406aa121",
+                        "name": "childRepo",
+                        "packagePath": "com.urosjarc.architect.example.interfaces",
+                        "type": "ChildRepo",
+                        "inlineType": null,
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents a use case for registering a new child in the system.\n\nThis class handles the process of registering a child, which includes verifying\nthat the child does not already exist, checking that the provided email domain\nis valid, saving the child into the repository, and sending notifications through email\nand SMS upon successful registration.\n\n@property childRepo Repository for handling child data storage and retrieval operations.\n@property emailService Service for sending email notifications.\n@property smsService Service for sending SMS notifications.\n@property networkService Service for validating email domain existence.",
+                        "id": "933095eb-480b-4d25-a33a-ede8eb6ff305"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "f5277a1e-4e24-469c-8cc8-d3bf406aa121",
+                        "name": "emailService",
+                        "packagePath": "com.urosjarc.architect.example.services",
+                        "type": "EmailService",
+                        "inlineType": null,
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents a use case for registering a new child in the system.\n\nThis class handles the process of registering a child, which includes verifying\nthat the child does not already exist, checking that the provided email domain\nis valid, saving the child into the repository, and sending notifications through email\nand SMS upon successful registration.\n\n@property childRepo Repository for handling child data storage and retrieval operations.\n@property emailService Service for sending email notifications.\n@property smsService Service for sending SMS notifications.\n@property networkService Service for validating email domain existence.",
+                        "id": "dabe6f2c-cb8a-451d-8fe8-bda362d9c8ca"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "f5277a1e-4e24-469c-8cc8-d3bf406aa121",
+                        "name": "smsService",
+                        "packagePath": "com.urosjarc.architect.example.services",
+                        "type": "SmsService",
+                        "inlineType": null,
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents a use case for registering a new child in the system.\n\nThis class handles the process of registering a child, which includes verifying\nthat the child does not already exist, checking that the provided email domain\nis valid, saving the child into the repository, and sending notifications through email\nand SMS upon successful registration.\n\n@property childRepo Repository for handling child data storage and retrieval operations.\n@property emailService Service for sending email notifications.\n@property smsService Service for sending SMS notifications.\n@property networkService Service for validating email domain existence.",
+                        "id": "2b16377f-4b10-4845-97f0-7d77248c44cd"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "f5277a1e-4e24-469c-8cc8-d3bf406aa121",
+                        "name": "networkService",
+                        "packagePath": "com.urosjarc.architect.example.services",
+                        "type": "NetworkService",
+                        "inlineType": null,
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents a use case for registering a new child in the system.\n\nThis class handles the process of registering a child, which includes verifying\nthat the child does not already exist, checking that the provided email domain\nis valid, saving the child into the repository, and sending notifications through email\nand SMS upon successful registration.\n\n@property childRepo Repository for handling child data storage and retrieval operations.\n@property emailService Service for sending email notifications.\n@property smsService Service for sending SMS notifications.\n@property networkService Service for validating email domain existence.",
+                        "id": "034a3484-2499-4e98-ac08-5449ecbcc865"
+                    },
+                    "aTypeParams": [
+                    ]
+                }
+            ],
+            "aMethods": [
+                {
+                    "aMethod": {
+                        "classId": "f5277a1e-4e24-469c-8cc8-d3bf406aa121",
+                        "name": "now",
+                        "visibility": "PUBLIC",
+                        "docs": null,
+                        "id": "d12dc5b1-023b-434c-a2ed-375382d70479"
+                    },
+                    "aParams": [
+                        {
+                            "aParam": {
+                                "methodId": "d12dc5b1-023b-434c-a2ed-375382d70479",
+                                "name": "childNew",
+                                "type": "ChildNew",
+                                "isOptional": false,
+                                "id": "47f905e1-0e7a-431a-a28d-8c66ebe86986"
+                            },
+                            "aTypeParams": [
+                            ]
+                        }
+                    ],
+                    "aReturnTypeData": {
+                        "aReturnType": {
+                            "type": "Result",
+                            "methodId": "d12dc5b1-023b-434c-a2ed-375382d70479",
+                            "id": "d20cfae1-0dcf-4637-ba3b-94f6f7b2e45e"
+                        },
+                        "aTypeParams": [
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "aClass": {
+                "name": "RegisterNewParent",
+                "packagePath": "com.urosjarc.architect.example.usecases",
+                "module": "example",
+                "docs": "Represents a use case for registering a new parent in the system.\n\nThe `RegisterNewParent` class handles the process of adding a new parent, which involves\nleveraging the `ParentRepo` for storing or checking parent data, making use of the\n`RegisterNewChild` use case for managing child registration, and validating essential\nnetwork-related operations via the `NetworkService`.\n\nThis class ensures integration between parent registration and its associated child registration\nprocess, creating a structured way to handle data storage and cross-service communications.\n\n@property parentRepo Repository for accessing and storing parent-related data.\n@property registerNewChild Use case for managing child registration.\n@property networkService Service for handling network-related validations.",
+                "isInterface": false,
+                "isAbstract": false,
+                "isData": true,
+                "isFinal": false,
+                "isInner": false,
+                "isOpen": false,
+                "isSealed": false,
+                "isValue": false,
+                "visibility": "PUBLIC",
+                "id": "cdb1f4d0-5a47-42b1-b2fb-6ef3ed0fc668"
+            },
+            "aConstructor": {
+                "classId": "cdb1f4d0-5a47-42b1-b2fb-6ef3ed0fc668",
+                "id": "bb7b487a-eb75-4e4c-bfd7-63f8ae8deee1"
+            },
+            "aProps": [
+                {
+                    "aProp": {
+                        "classId": "cdb1f4d0-5a47-42b1-b2fb-6ef3ed0fc668",
+                        "name": "parentRepo",
+                        "packagePath": "com.urosjarc.architect.example.interfaces",
+                        "type": "ParentRepo",
+                        "inlineType": null,
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents a use case for registering a new parent in the system.\n\nThe `RegisterNewParent` class handles the process of adding a new parent, which involves\nleveraging the `ParentRepo` for storing or checking parent data, making use of the\n`RegisterNewChild` use case for managing child registration, and validating essential\nnetwork-related operations via the `NetworkService`.\n\nThis class ensures integration between parent registration and its associated child registration\nprocess, creating a structured way to handle data storage and cross-service communications.\n\n@property parentRepo Repository for accessing and storing parent-related data.\n@property registerNewChild Use case for managing child registration.\n@property networkService Service for handling network-related validations.",
+                        "id": "702ee8fc-33a5-4472-8578-66a87ef01bed"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "cdb1f4d0-5a47-42b1-b2fb-6ef3ed0fc668",
+                        "name": "registerNewChild",
+                        "packagePath": "com.urosjarc.architect.example.usecases",
+                        "type": "RegisterNewChild",
+                        "inlineType": null,
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents a use case for registering a new parent in the system.\n\nThe `RegisterNewParent` class handles the process of adding a new parent, which involves\nleveraging the `ParentRepo` for storing or checking parent data, making use of the\n`RegisterNewChild` use case for managing child registration, and validating essential\nnetwork-related operations via the `NetworkService`.\n\nThis class ensures integration between parent registration and its associated child registration\nprocess, creating a structured way to handle data storage and cross-service communications.\n\n@property parentRepo Repository for accessing and storing parent-related data.\n@property registerNewChild Use case for managing child registration.\n@property networkService Service for handling network-related validations.",
+                        "id": "c6f85129-2482-436c-a6f4-e18b4c08bbbc"
+                    },
+                    "aTypeParams": [
+                    ]
+                },
+                {
+                    "aProp": {
+                        "classId": "cdb1f4d0-5a47-42b1-b2fb-6ef3ed0fc668",
+                        "name": "networkService",
+                        "packagePath": "com.urosjarc.architect.example.services",
+                        "type": "NetworkService",
+                        "inlineType": null,
+                        "annotations": [
+                        ],
+                        "visibility": "PUBLIC",
+                        "isMutable": false,
+                        "isNullable": false,
+                        "isOptional": false,
+                        "isAbstract": false,
+                        "isConst": false,
+                        "isFinal": false,
+                        "isLateinit": false,
+                        "isOpen": false,
+                        "isIdentifier": false,
+                        "docs": "Represents a use case for registering a new parent in the system.\n\nThe `RegisterNewParent` class handles the process of adding a new parent, which involves\nleveraging the `ParentRepo` for storing or checking parent data, making use of the\n`RegisterNewChild` use case for managing child registration, and validating essential\nnetwork-related operations via the `NetworkService`.\n\nThis class ensures integration between parent registration and its associated child registration\nprocess, creating a structured way to handle data storage and cross-service communications.\n\n@property parentRepo Repository for accessing and storing parent-related data.\n@property registerNewChild Use case for managing child registration.\n@property networkService Service for handling network-related validations.",
+                        "id": "11017992-8468-4a1a-9253-db7eb5caba9a"
+                    },
+                    "aTypeParams": [
+                    ]
+                }
+            ],
+            "aMethods": [
+                {
+                    "aMethod": {
+                        "classId": "cdb1f4d0-5a47-42b1-b2fb-6ef3ed0fc668",
+                        "name": "now",
+                        "visibility": "PUBLIC",
+                        "docs": null,
+                        "id": "619fcc74-3664-4fa4-839c-5c60310641b9"
+                    },
+                    "aParams": [
+                        {
+                            "aParam": {
+                                "methodId": "619fcc74-3664-4fa4-839c-5c60310641b9",
+                                "name": "childNew",
+                                "type": "ChildNew",
+                                "isOptional": false,
+                                "id": "4a53d579-90d8-4ccb-b05d-a618f69eff35"
+                            },
+                            "aTypeParams": [
+                            ]
+                        }
+                    ],
+                    "aReturnTypeData": {
+                        "aReturnType": {
+                            "type": "Result",
+                            "methodId": "619fcc74-3664-4fa4-839c-5c60310641b9",
+                            "id": "40983a90-6fb7-4b8b-8291-fbf0e08a6abf"
+                        },
+                        "aTypeParams": [
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

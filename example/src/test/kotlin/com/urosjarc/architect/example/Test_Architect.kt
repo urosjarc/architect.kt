@@ -1,7 +1,12 @@
-package com.urosjarc.architect.generators
+package com.urosjarc.architect.example
 
 import com.urosjarc.architect.lib.Architect
-import com.urosjarc.architect.lib.Utils
+import com.urosjarc.architect.generators.DomainModelsGenerator
+import com.urosjarc.architect.generators.JetbrainsExposedRepositoryGenerator
+import com.urosjarc.architect.generators.JetbrainsExposedTypeMapping
+import com.urosjarc.architect.generators.PlantUMLDependencySpaceGenerator
+import com.urosjarc.architect.generators.PlantUMLDomainSpaceGenerator
+import com.urosjarc.architect.generators.RawDependencyObjectGenerator
 import com.urosjarc.architect.lib.serializers.UUIDSerializer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -12,7 +17,7 @@ import kotlin.test.Test
 
 
 class Test_Architect {
-    val folder = File("/home/urosjarc/vcs/architect.kt/example/src/main/kotlin/com/urosjarc/architect/example/app")
+    val folder = File("/home/urosjarc/vcs/architect.kt/example/src/main/kotlin/com/urosjarc/architect/example/")
 
     val domainModelsGenerator = DomainModelsGenerator(
         modelFolder = File(folder, "models"),
@@ -35,8 +40,13 @@ class Test_Architect {
             ),
             "kotlinx.datetime.Instant" to JetbrainsExposedTypeMapping(
                 { "varchar(\"${it.aProp.name}\", 200)" },
-                { "row[table.${it.aProp.name}]" },
-                { "" },
+                { "Instant.parse(row[table.${it.aProp.name}])" },
+                { ".toString()" },
+            ),
+            "com.urosjarc.architect.example.domain.Sex" to JetbrainsExposedTypeMapping(
+                { "varchar(\"${it.aProp.name}\", 200)" },
+                { "Sex.valueOf(row[table.${it.aProp.name}])" },
+                { ".toString()" },
             )
         ),
     )
@@ -56,7 +66,6 @@ class Test_Architect {
 
     @Test
     fun `test all`() {
-        folder.deleteRecursively()
         folder.mkdirs()
 
         val aStateData = Architect.getStateData(scannedPackage = "com.urosjarc.architect.example", classPackages = Utils.classPackages)
@@ -66,20 +75,21 @@ class Test_Architect {
                 contextual(UUIDSerializer)
             }
         }
-        val aStateDataFile = File(folder, "aStateData.json")
-        aStateDataFile.createNewFile()
-        aStateDataFile.writeText(json.encodeToString(aStateData))
 
         domainModelsGenerator.generate(aStateData = aStateData)
 
         val aStateData2 = Architect.getStateData(scannedPackage = "com.urosjarc.architect.example", classPackages = Utils.classPackages)
-        val aStateData2File = File(folder, "aStateData2.json")
-        aStateData2File.createNewFile()
-        aStateData2File.writeText(json.encodeToString(aStateData))
 
-        plantUMLDependencySpaceGenerator.generate(aStateData = aStateData2)
-        plantUMLDomainSpaceGenerator.generate(aStateData = aStateData2)
-//        rawDependencyObjectGenerator.generate(aStateData = aStateData2)
+        jetbrainsExposedRepositoryGenerator.generate(aStateData = aStateData2)
+
+        val aStateData3 = Architect.getStateData(scannedPackage = "com.urosjarc.architect.example", classPackages = Utils.classPackages)
+        val aStateData3File = File(folder, "aStateData.json")
+        aStateData3File.createNewFile()
+        aStateData3File.writeText(json.encodeToString(aStateData3))
+
+        plantUMLDependencySpaceGenerator.generate(aStateData = aStateData3)
+        plantUMLDomainSpaceGenerator.generate(aStateData = aStateData3)
+        rawDependencyObjectGenerator.generate(aStateData = aStateData3)
     }
 
 }

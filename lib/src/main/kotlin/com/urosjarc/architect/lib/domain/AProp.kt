@@ -2,6 +2,8 @@ package com.urosjarc.architect.lib.domain
 
 import com.urosjarc.architect.annotations.DomainEntity
 import com.urosjarc.architect.annotations.Identifier
+import com.urosjarc.architect.annotations.Mod
+import com.urosjarc.architect.annotations.New
 import com.urosjarc.architect.lib.extend.ext_name
 import com.urosjarc.architect.lib.types.Id
 import kotlinx.serialization.Serializable
@@ -25,10 +27,12 @@ public data class AProp(
     val isLateinit: Boolean,
     val isOpen: Boolean,
     var isIdentifier: Boolean,
+    val docs: String?,
 
     val id: Id<AProp> = Id(),
 ) {
 
     val import: String get() = "$packagePath.$type"
-    val isVar: Boolean get() = this.annotations.contains(Identifier::class.ext_name)
+    val isMod: Boolean get() = this.isIdentifier || this.annotations.contains(Mod::class.ext_name)
+    val isNew: Boolean get() = this.annotations.contains(New::class.ext_name)
 }

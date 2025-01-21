@@ -12,6 +12,7 @@ public data class AEnum(
     val module: String?,
     val visibility: AVisibility,
     val type: String?,
+    val docs: String?,
 
     val id: Id<AEnum> = Id(),
 ) {

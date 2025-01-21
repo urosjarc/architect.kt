@@ -1,0 +1,45 @@
+@startuml
+skinparam backgroundColor darkgray
+skinparam ClassBackgroundColor lightgray
+interface ChildRepo {
+}
+interface GrandParentRepo {
+}
+interface ParentRepo {
+}
+interface SmsService {
+	+send(text: String) : Boolean
+}
+interface NetworkService {
+	+emailDomainExist(email: String) : Boolean
+}
+interface EmailService {
+	Provides functionality for sending emails.
+	==
+	+send(email: String) : Boolean
+}
+class RegisterNewChild {
+	Represents a use case for registering a new child in the system.
+	==
+	+childRepo: ChildRepo
+	+emailService: EmailService
+	+smsService: SmsService
+	+networkService: NetworkService
+	+now(childNew: ChildNew) : Result
+}
+class RegisterNewParent {
+	Represents a use case for registering a new parent in the system.
+	==
+	+parentRepo: ParentRepo
+	+registerNewChild: RegisterNewChild
+	+networkService: NetworkService
+	+now(childNew: ChildNew) : Result
+}
+RegisterNewChild --> ChildRepo
+RegisterNewChild --> EmailService
+RegisterNewChild --> SmsService
+RegisterNewChild --> NetworkService
+RegisterNewParent --> ParentRepo
+RegisterNewParent --> RegisterNewChild
+RegisterNewParent --> NetworkService
+@enduml

@@ -7,10 +7,6 @@ plugins {
     id("com.github.johnrengelman.shadow")
 }
 
-kotlin {
-    explicitApi()
-}
-
 dependencies {
     implementation(project(":annotations"))
     testImplementation(project(":lib"))

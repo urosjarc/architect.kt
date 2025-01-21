@@ -1,0 +1,47 @@
+@startuml
+skinparam backgroundColor darkgray
+skinparam ClassBackgroundColor lightgray
+class GrandParent {
+	Represents the GrandParent entity in the domain model
+	==
+	+name: String
+	+surname: String
+	+birth: Instant
+	+sex: Sex
+	+id: Id<GrandParent>
+}
+class Child {
+	+name: String
+	+email: String
+	+surname: String
+	+birth: Instant
+	+sex: Sex
+	+parent: Id<Parent>
+	+cash: Double
+	+telephone: String
+	+id: Id<Child>
+}
+class Parent {
+	Represents the Parent entity in the domain model.
+	==
+	+name: String
+	+surname: String
+	+birth: Instant
+	+parent: Id<GrandParent>
+	+sex: Sex
+	+id: Id<Parent>
+}
+enum Sex {
+	Represents the biological sex of an individual.
+	==
+	MALE: 0
+	Represents the male biological sex.
+	==
+	FEMAIL: 1
+	Represents the female biological sex.
+	==
+	UNDEFINED: 2
+}
+Child -up-> Parent: parent
+Parent -up-> GrandParent: parent
+@enduml

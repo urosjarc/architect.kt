@@ -16,7 +16,6 @@ public class DomainModelsGenerator(
     override fun generate(aStateData: AStateData) {
         modelFolder.mkdirs()
         aStateData.domainEntities.forEach { it: AClassData ->
-            logger.info(it)
             this.generateModel(clsData = it)
         }
     }
@@ -35,14 +34,14 @@ public class DomainModelsGenerator(
 
             if (data.aProp.inlineType != null) type += "<${typeParams}>"
 
-            if (!data.aProp.isOptional) {
+            if (data.aProp.isNew) {
                 newFields.add("val ${data.aProp.name}: $type,")
-                newImportsFields.add(data.aProp.type)
+                newImportsFields.add(data.aProp.import)
                 newImportsFields.addAll(data.aTypeParams.map { it.import })
             }
-            if (data.aProp.isVar || data.aProp.isIdentifier) {
+            if (data.aProp.isMod) {
                 modFields.add("val ${data.aProp.name}: $type,")
-                modImportsFields.add(data.aProp.type)
+                modImportsFields.add(data.aProp.import)
                 modImportsFields.addAll(data.aTypeParams.map { it.import })
             }
         }

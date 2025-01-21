@@ -2,6 +2,7 @@ package com.urosjarc.architect.lib
 
 import com.lemonappdev.konsist.api.Konsist
 import com.lemonappdev.konsist.api.declaration.*
+import com.lemonappdev.konsist.api.declaration.combined.KoClassAndInterfaceDeclaration
 import com.lemonappdev.konsist.api.declaration.type.KoTypeDeclaration
 import com.urosjarc.architect.annotations.*
 import com.urosjarc.architect.lib.data.*
@@ -40,8 +41,8 @@ public object Architect {
             identifiers = identifiers,
             domainEntities = this.getAnnotationEntities(classes, DomainEntity::class.java, identifiers = identifiers),
             domainValues = this.getAnnotationEnums(enums, DomainValues::class.java),
-            repos = this.getAnnotationEntities(classes, Repository::class.java),
-            services = this.getAnnotationEntities(classes, Service::class.java),
+            repos = this.getAnnotationEntities(interfaces, Repository::class.java),
+            services = this.getAnnotationEntities(interfaces, Service::class.java),
             useCases = this.getAnnotationEntities(classes, UseCase::class.java)
         )
     }
@@ -101,7 +102,7 @@ public object Architect {
         return orderedDependencies
     }
 
-    private fun getVisibility(sr: KoClassDeclaration): AVisibility = if (sr.hasPublicOrDefaultModifier) AVisibility.PUBLIC
+    private fun getVisibility(sr: KoClassAndInterfaceDeclaration): AVisibility = if (sr.hasPublicOrDefaultModifier) AVisibility.PUBLIC
     else if (sr.hasProtectedModifier) AVisibility.PROTECTED
     else if (sr.hasPrivateModifier) AVisibility.PRIVATE
     else if (sr.hasInternalModifier) AVisibility.INTERNAL
@@ -145,13 +146,14 @@ public object Architect {
                 module = sr.packagee!!.moduleName,
                 visibility = this.getVisibility(sr = sr),
                 type = sr.primaryConstructor?.parameters?.first()?.type?.bareSourceType,
+                docs = sr.kDoc?.text
             )
 
             val aEntity = AEnumData(
                 aEnum = aEnum,
                 aEnumValues = sr.enumConstants.map { ec: KoEnumConstantDeclaration ->
                     val value = if (ec.text.contains("(")) ec.text.substringAfter("(").substringBefore(")").replace("\"", "").trim() else null
-                    AEnumValue(name = ec.name, value = value)
+                    AEnumValue(name = ec.name, value = value, docs = ec.kDoc?.text)
                 }
             )
             aEntities.add(aEntity)
@@ -160,31 +162,54 @@ public object Architect {
     }
 
     private fun getAnnotationEntities(
-        scanResult: List<KoClassDeclaration>,
+        scanResult: List<KoClassAndInterfaceDeclaration>,
         annotation: Class<out Annotation>,
         identifiers: List<AClassData> = listOf()
     ): List<AClassData> {
 
         val aEntities = mutableListOf<AClassData>()
-        val scanResults: List<KoClassDeclaration> = scanResult.filter { it.annotations.filter { it.name == annotation.simpleName }.isNotEmpty() }
+        val scanResults = scanResult.filter { it.annotations.filter { it.name == annotation.simpleName }.isNotEmpty() }
 
         logger.info("Found ${scanResults.size} @${annotation.simpleName}")
 
+        scanResults.forEach { sr ->
 
-        scanResults.forEach { sr: KoClassDeclaration ->
-            val aClass = AClass(
-                name = sr.name,
-                packagePath = sr.fullyQualifiedName!!.ext_beforeLastDot,
-                module = sr.packagee!!.moduleName,
-                isAbstract = sr.hasAbstractModifier,
-                isData = sr.hasDataModifier,
-                isFinal = sr.hasFinalModifier,
-                isInner = sr.hasInnerModifier,
-                isOpen = sr.hasOpenModifier,
-                isSealed = sr.hasSealedModifier,
-                isValue = sr.hasValueModifier,
-                visibility = this.getVisibility(sr = sr),
-            )
+            val aClass = when (sr) {
+                is KoClassDeclaration -> AClass(
+                    name = sr.name,
+                    isInterface = false,
+                    packagePath = sr.fullyQualifiedName!!.ext_beforeLastDot,
+                    module = sr.packagee!!.moduleName,
+                    isAbstract = sr.hasAbstractModifier,
+                    isData = sr.hasDataModifier,
+                    isFinal = sr.hasFinalModifier,
+                    isInner = sr.hasInnerModifier,
+                    isOpen = sr.hasOpenModifier,
+                    isSealed = sr.hasSealedModifier,
+                    isValue = sr.hasValueModifier,
+                    visibility = this.getVisibility(sr = sr),
+                    docs = sr.kDoc?.text
+                )
+
+                is KoInterfaceDeclaration -> AClass(
+                    name = sr.name,
+                    packagePath = sr.fullyQualifiedName!!.ext_beforeLastDot,
+                    module = sr.packagee!!.moduleName,
+                    isInterface = true,
+                    isAbstract = false,
+                    isData = false,
+                    isFinal = false,
+                    isInner = false,
+                    isOpen = false,
+                    isSealed = sr.hasSealedModifier,
+                    isValue = false,
+                    visibility = this.getVisibility(sr = sr),
+                    docs = sr.kDoc?.text
+                )
+
+                else -> throw Exception("$sr is not class or interface!")
+            }
+
 
             val aEntity = AClassData(
                 aClass = aClass,
@@ -217,7 +242,8 @@ public object Architect {
                             isLateinit = kprop.hasLateinitModifier,
                             isOpen = kprop.hasOpenModifier,
                             inlineType = if (kprop.type!!.name.contains("<")) "" else null,
-                            isIdentifier = isIdentifier
+                            isIdentifier = isIdentifier,
+                            docs = kprop.kDoc?.text
                         ),
                         aTypeParams = this.getTypeParams(returnTypeId = null, paramId = null, propId = aPropId, tp = kprop.type!!)
                     )
@@ -231,7 +257,8 @@ public object Architect {
                             id = methodId,
                             classId = aClass.id,
                             name = mfun.name,
-                            visibility = this.getVisibility(mfun)
+                            visibility = this.getVisibility(mfun),
+                            docs = mfun.kDoc?.text
                         ),
                         aReturnTypeData = AReturnTypeData(
                             aReturnType = AReturnType(
@@ -249,7 +276,7 @@ public object Architect {
                                     methodId = methodId,
                                     name = kparam.name,
                                     type = kparam.type.bareSourceType,
-                                    isOptional = kparam.hasDefaultValue()
+                                    isOptional = kparam.hasDefaultValue(),
                                 ),
                                 aTypeParams = this.getTypeParams(returnTypeId = null, propId = null, paramId = paramId, tp = kparam.type)
                             )
@@ -257,6 +284,7 @@ public object Architect {
                     )
                 }
             )
+
             aEntities.add(aEntity)
         }
         return aEntities

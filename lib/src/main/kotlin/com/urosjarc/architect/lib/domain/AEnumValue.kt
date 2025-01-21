@@ -9,5 +9,6 @@ import kotlinx.serialization.Serializable
 public data class AEnumValue(
     val id: Id<AEnumValue> = Id(),
     val name: String,
-    val value: String?
+    val value: String?,
+    val docs: String?
 )

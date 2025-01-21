@@ -44,6 +44,11 @@ public class JetbrainsExposedRepositoryGenerator(
             { "row[table.${it.aProp.name}]" },
             { "" },
         ),
+        "kotlin.Double" to JetbrainsExposedTypeMapping(
+            { "double(\"${it.aProp.name}\")" },
+            { "row[table.${it.aProp.name}]" },
+            { "" },
+        ),
         "kotlin.Boolean" to JetbrainsExposedTypeMapping(
             { "bool(\"${it.aProp.name}\")" },
             { "row[table.${it.aProp.name}]" },
@@ -226,7 +231,7 @@ public class JetbrainsExposedRepositoryGenerator(
 
     private fun generateImports(clsData: AClassData): Iterable<String> {
         val imports = mutableSetOf(clsData.aClass.import)
-        clsData.aProps.forEach { imports.add(it.aProp.type) }
+        clsData.aProps.forEach { imports.add(it.aProp.import) }
         return imports.map { "import $it" }
     }
 
@@ -243,7 +248,7 @@ public class JetbrainsExposedRepositoryGenerator(
     private fun generateUpdateFields(clsData: AClassData): Iterable<String> {
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
-            if (data.aProp.isMutable || data.aProp.isIdentifier) {
+            if (data.aProp.isMod) {
                 val mappedData = this.getMappingValue(import = data.aProp.import).second.domainValue(data)
                 fields.add("it[${data.aProp.name}] = obj.${data.aProp.name}${mappedData}")
             }
@@ -254,7 +259,7 @@ public class JetbrainsExposedRepositoryGenerator(
     private fun generateInsertFields(clsData: AClassData): Iterable<String> {
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
-            if (!data.aProp.isOptional) {
+            if (data.aProp.isNew) {
                 val mappedData = this.getMappingValue(import = data.aProp.import).second.domainValue(data)
                 fields.add("it[${data.aProp.name}] = obj.${data.aProp.name}${mappedData}")
             }
@@ -265,7 +270,7 @@ public class JetbrainsExposedRepositoryGenerator(
     private fun generateBatchInsertFields(clsData: AClassData): Iterable<String> {
         val fields = mutableListOf<String>()
         clsData.aProps.forEach { data: APropData ->
-            if (!data.aProp.isOptional) {
+            if (data.aProp.isNew) {
                 val mappedData = this.getMappingValue(import = data.aProp.import).second.domainValue(data)
                 fields.add("this[t.${data.aProp.name}] = it.${data.aProp.name}${mappedData}")
             }
